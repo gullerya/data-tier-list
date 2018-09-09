@@ -1,0 +1,59 @@
+{
+  "name": "data-tier-list",
+  "version": "0.0.1",
+  "description": "List component based on DataTier binding engine",
+  "keywords": [
+    "datatier",
+    "data",
+    "tier",
+    "two",
+    "way",
+    "binding",
+    "tie",
+    "model",
+    "view",
+    "javascript",
+    "list",
+    "repeater",
+    "custom",
+    "element",
+    "component",
+    "webcomponent"
+  ],
+  "homepage": "https://github.com/gullerya/data-tier-list",
+  "bugs": {
+    "url": "https://github.com/gullerya/data-tier-list/issues",
+    "email": "gullerya@gmail.com"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/data-tier-list.min.js",
+  "author": {
+    "name": "Guller Yuri",
+    "email": "gullerya@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gullerya/data-tier-list"
+  },
+  "scripts": {
+    "eslint": "eslint -c ./build/.eslintrc.json ./src/**/*.js",
+    "build": "node ./build/tools/build-dist.js"
+  },
+  "dependencies": {
+    "data-tier": "^0.6.19"
+  },
+  "devDependencies": {
+    "eslint": "^5.5.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "eslint-config-standard": "^12.0.0",
+    "fs-extra": "^7.0.0",
+    "uglify-es": "^3.3.9",
+    "just-test": "^0.1.0"
+  }
+}
