@@ -42,10 +42,9 @@
     "eslint": "eslint -c ./build/.eslintrc.json ./src/**/*.js",
     "build": "node ./build/tools/build-dist.js"
   },
-  "dependencies": {
-    "data-tier": "^0.6.21"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "data-tier": "^0.6.22",
     "eslint": "^5.7.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-import": "^2.14.0",
