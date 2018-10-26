@@ -14,13 +14,6 @@ suite.addTest({name: 'validate simple select options'}, (pass, fail) => {
 			]
 		});
 
-	for (let i = 0; i < 10000; i++) {
-		t.model.options.push({
-			text: 'test ' + i,
-			value: i + 5
-		})
-	}
-
 	e.innerHTML = `<select>
 			<template is="data-tier-item-template" class="order" data-tie="selectA:options => items">
 				<option data-tie="item:text => textContent, item:value => value"></option>
@@ -28,6 +21,15 @@ suite.addTest({name: 'validate simple select options'}, (pass, fail) => {
 		</select>`;
 
 	document.body.appendChild(e);
+	//	TODO: verify
+
+	t.model.options.push({text: 'TEXT 4', value: 4});
+	//	TODO: verify
+
+	t.model.options.unshift({text: 'TEXT 0', value: 0});
+	//	TODO: verify
+
+	t.model.options[4].text = 'TEXT LAST';
 
 	pass();
 });
