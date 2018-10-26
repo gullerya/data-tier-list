@@ -14,6 +14,13 @@ suite.addTest({name: 'validate simple select options'}, (pass, fail) => {
 			]
 		});
 
+	for (let i = 0; i < 10000; i++) {
+		t.model.options.push({
+			text: 'test ' + i,
+			value: i + 5
+		})
+	}
+
 	e.innerHTML = `<select>
 			<template is="data-tier-item-template" class="order" data-tie="selectA:options => items">
 				<option data-tie="item:text => textContent, item:value => value"></option>

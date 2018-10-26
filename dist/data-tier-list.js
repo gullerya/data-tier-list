@@ -59,12 +59,11 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 	}
 
 	static insertNewContent(container, template, controllerParameters, from, to) {
-		let result = null, optimizationMap, tmpContent, tmpTemplate, index = from, i, i1, tmp,
+		let result = null, optimizationMap, tmpContent, tmpTemplate, index = from, i, tmp,
 			prefix = controllerParameters[0] + '.', optTmpIdx,
-			views, view,
-			pair;
+			views, view;
 		tmpContent = template.content;
-		optimizationMap = DataTierItemTemplate.prepareOptimizationMap(template, 'item:', prefix);
+		optimizationMap = DataTierItemTemplate.prepareOptimizationMap(template);
 		optTmpIdx = optimizationMap.index;
 
 		for (; index < to; index++) {
@@ -74,8 +73,8 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 			while (i--) {
 				tmp = optTmpIdx[i];
 				view = views[tmp];
-				pair = optimizationMap[tmp];
-				view.dataset.tie = view.dataset.tie.replace(/item:/g, prefix + index + '.');
+				// view.dataset.tie = view.dataset.tie.replace(/item:/g, prefix + index + '.');
+				view.dataset.tie = view.dataset.tie.split('item:').join(prefix + index + '.');
 			}
 			index === from ? result = tmpTemplate : result.appendChild(tmpTemplate);
 		}
@@ -113,27 +112,15 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 		}
 	}
 
-	static prepareOptimizationMap(template, itemId, prefix) {
+	//	extract and index all the data-tied elements from the template so that on each clone the pre-processing will be based on this index
+	//	we just need to know which elements (index of array-like, outcome of 'querySelectorAll(*)') are relevant
+	static prepareOptimizationMap(template) {
 		let result = {index: []},
-			finder = new RegExp(itemId, 'g'),
 			views = template.content.querySelectorAll('*'),
-			i = views.length, view, keys, i1, key, value, relevantKeys;
+			i = views.length, view;
 		while (i--) {
 			view = views[i];
-			if (view.nodeType !== Node.DOCUMENT_NODE && view.nodeType !== Node.ELEMENT_NODE) continue;
-			keys = Object.keys(view.dataset);
-			i1 = keys.length;
-			relevantKeys = [];
-			while (i1--) {
-				key = keys[i1];
-				value = view.dataset.tie;
-				if (value && value.startsWith(itemId)) {
-					value = value.replace(finder, prefix);
-					relevantKeys.push([key, value]);
-				}
-			}
-			if (relevantKeys.length) {
-				result[i] = relevantKeys;
+			if (view.dataset && typeof view.dataset.tie === 'string') {
 				result.index.push(i);
 			}
 		}
