@@ -6,3 +6,4 @@ process.stdout.write('*** CLEANUP ***' + os.EOL + os.EOL);
 fsExtra.emptyDirSync('./dist');
 
 process.stdout.write('*** DONE ***' + os.EOL + os.EOL);
+fsExtra.copySync('./src/data-tier-list.js', './dist/data-tier-list.js');
