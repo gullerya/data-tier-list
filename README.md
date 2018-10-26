@@ -1,4 +1,4 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![npm version](https://badge.fury.io/js/data-tier-list.svg)](https://badge.fury.io/js/data-tier-list)
 [![Build Status](https://travis-ci.org/gullerya/data-tier-list.svg?branch=master)](https://travis-ci.org/gullerya/data-tier-list)
 
