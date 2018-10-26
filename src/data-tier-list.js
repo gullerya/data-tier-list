@@ -34,13 +34,12 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 		let existingList = container.querySelectorAll('[data-dt-list-item-aid="' + templateItemAid + '"]'),
 			existingListLength = existingList.length;
 
+		//	remove extra items, if any
 		if (existingListLength > desiredListLength) {
 			while (existingListLength > desiredListLength) container.removeChild(existingList[--existingListLength]);
 		}
 
-		//	run update on the whole list (in future attempt to get the change's content and optimize this one)
-		DataTierItemTemplate.updateExistingContent(this, container, existingListLength);
-
+		//	add missing items, if any
 		if (existingListLength < desiredListLength) {
 			ruleData = DataTierItemTemplate.extractControllerParameters(this.dataset.tie);
 			DataTierItemTemplate.insertNewContent(container, this, ruleData, existingListLength, desiredListLength);
@@ -79,36 +78,6 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 		}
 
 		container.appendChild(result);
-	}
-
-	static updateExistingContent(template, container, required) {
-		let allBluePrintElements = template.content.querySelectorAll('*'),
-			tieProcsMap = [], i;
-		i = allBluePrintElements.length;
-		while (i--) {
-			tieProcsMap[i] = Object.keys(allBluePrintElements[i].dataset).filter(key => key === 'tie');
-		}
-
-		let done = 0, i1, i2, child,
-			descendants, descendant,
-			keys;
-		i = 0;
-		while (done < required) {
-			child = container.childNodes[i++];
-			if (child !== template && (child.nodeType === Node.DOCUMENT_NODE || child.nodeType === Node.ELEMENT_NODE) && child.dataset.dtListItemAid) {
-				descendants = child.querySelectorAll('*');
-				i1 = tieProcsMap.length;
-				while (i1--) {
-					descendant = i1 ? descendants[i1 - 1] : child;
-					keys = tieProcsMap[i1];
-					i2 = keys.length;
-					// while (i2--) {
-					// 	viewsService.updateView(descendant, keys[i2]);
-					// }
-				}
-				done++;
-			}
-		}
 	}
 
 	//	extract and index all the data-tied elements from the template so that on each clone the pre-processing will be based on this index

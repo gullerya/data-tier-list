@@ -30,6 +30,10 @@ suite.addTest({name: 'validate simple select options'}, (pass, fail) => {
 	//	TODO: verify
 
 	t.model.options[4].text = 'TEXT LAST';
+	//	TODO: verify
+
+	t.model.options[0].text = 'TEXT FIRST';
+	//	TODO: verify
 
 	pass();
 });
