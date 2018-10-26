@@ -35,6 +35,16 @@ suite.addTest({name: 'validate simple select options'}, (pass, fail) => {
 	t.model.options[0].text = 'TEXT FIRST';
 	//	TODO: verify
 
+	t.model.options.shift();
+	t.model.options[0].text = 'TEXT NEW FIRST';
+	//	TODO: verify
+
+	t.model.options.pop();
+	//	TODO: verify
+
+	t.model.options.reverse();
+	//	TODO: verify
+
 	pass();
 });
 
