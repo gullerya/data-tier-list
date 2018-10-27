@@ -13,7 +13,7 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 
 	set items(newItemsList) {
 		if (!Array.isArray(newItemsList)) {
-			throw new Error('valid array expected but got ' + newItemsList)
+			return;
 		}
 
 		this[ITEMS_KEY] = newItemsList;
