@@ -1,5 +1,6 @@
 const
 	os = require('os'),
+	fs = require('fs'),
 	fsExtra = require('fs-extra'),
 	uglifyES = require('uglify-es');
 
