@@ -21,7 +21,7 @@ class Product {
 suite.addTest({name: 'validate simple select options'}, async (pass, fail) => {
 	e.innerHTML = `
 			<template is="data-tier-item-template" class="order" data-tie="productsComplexRepeater:products => items">
-				<span>
+				<div>
 					<span data-tie="item:name => textContent"></span>
 					<span data-tie="item:description => textContent"></span>
 					<input type="checkbox" data-tie="item:available => value"/>
@@ -40,19 +40,23 @@ suite.addTest({name: 'validate simple select options'}, async (pass, fail) => {
 	document.body.appendChild(e);
 
 	//	add products data one by one
-	let i = 20000;
+	let i = 2000;
 
 	function addProduct() {
 		window.requestAnimationFrame(() => {
-			t.model.products.push(new Product(
-				'name ' + i,
-				'description ' + i,
-				{city: 'Nowhere', street: 'Emptiness', number: i},
-				i % 5 !== 0,
-				i % 5,
-				1000 + i
-			));
-			if (--i) addProduct();
+			let cycles = 5;
+			while (--cycles) {
+				t.model.products.push(new Product(
+					'name ' + i,
+					'description ' + i,
+					{city: 'Nowhere', street: 'Emptiness', number: i},
+					i % 5 !== 0,
+					i % 5,
+					1000 + i
+				));
+				i--;
+			}
+			if (i) addProduct();
 		});
 	}
 
