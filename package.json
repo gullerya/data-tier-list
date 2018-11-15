@@ -44,7 +44,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "data-tier": "^1.0.1",
+    "data-tier": "^1.0.2",
     "eslint": "^5.9.0",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-import": "^2.14.0",
