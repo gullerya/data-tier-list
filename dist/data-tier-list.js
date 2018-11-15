@@ -59,7 +59,7 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 
 	static insertNewContent(container, template, controllerParameters, from, to) {
 		let result = null, optimizationMap, tmpContent, tmpTemplate, index = from, i, tmp,
-			prefix = controllerParameters[0] + '.', optTmpIdx,
+			prefix = controllerParameters[0] + (controllerParameters[0].indexOf(':') < 0 ? ':' : '.'), optTmpIdx,
 			views, view;
 		tmpContent = template.content;
 		optimizationMap = DataTierItemTemplate.prepareOptimizationMap(template);
