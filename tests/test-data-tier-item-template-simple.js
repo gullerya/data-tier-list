@@ -1,19 +1,18 @@
-import * as DataTier from '../node_modules/data-tier/dist/module/data-tier.js';
+import * as DataTier from '../node_modules/data-tier/dist/data-tier.js';
 import '../dist/data-tier-list.js';
 
-let
-	suite = Utils.JustTest.createSuite({name: 'Simple cases - select'}),
-	e = document.createElement('select'),
-	t = DataTier.ties.create('selectA', {
-		options: [
-			{text: 'TEXT 1', value: 1},
-			{text: 'TEXT 2', value: 2},
-			{text: 'TEXT 3', value: 3}
-		]
-	}),
-	children;
+const suite = Utils.JustTest.createSuite({name: 'Simple cases - select'});
 
 suite.addTest({name: 'validate simple select options'}, async (pass, fail) => {
+	let t = DataTier.ties.create('selectA', {
+			options: [
+				{text: 'TEXT 1', value: 1},
+				{text: 'TEXT 2', value: 2},
+				{text: 'TEXT 3', value: 3}
+			]
+		}),
+		e = document.createElement('select'),
+		children;
 	e.innerHTML = `
 			<template is="data-tier-item-template" class="order" data-tie="selectA:options => items">
 				<option data-tie="item:text => textContent, item:value => value"></option>
@@ -85,6 +84,31 @@ suite.addTest({name: 'validate simple select options'}, async (pass, fail) => {
 	if (children[0].textContent !== 'TEXT 3' || children[0].value !== '3') fail('[reverse] option 0 is not as expected');
 	if (children[1].textContent !== 'TEXT 2' || children[1].value !== '2') fail('[reverse] option 1 is not as expected');
 	if (children[2].textContent !== 'TEXT NEW FIRST' || children[2].value !== '1') fail('[reverse] option 2 is not as expected');
+
+	pass();
+});
+
+
+suite.addTest({name: 'validate binding item as a whole'}, async (pass, fail) => {
+	let tie = DataTier.ties.create('wholeItem', [
+			'A', 'B', 'C'
+		]),
+		e = document.createElement('select'),
+		children;
+
+	e.innerHTML = `
+			<template is="data-tier-item-template" data-tie="wholeItem => items">
+				<option class="whole-item-bind" data-tie="item => textContent, item => value"></option>
+			</template>`;
+
+	//	initial insert
+	document.body.appendChild(e);
+	await new Promise(res => setTimeout(res, 0));
+	children = e.querySelectorAll('.whole-item-bind');
+	if (children.length !== 3) fail('expected to have 3 options, found ' + children.length);
+	if (children[0].textContent !== 'A' || children[0].value !== 'A') fail('option 0 is not as expected');
+	if (children[1].textContent !== 'B' || children[1].value !== 'B') fail('option 1 is not as expected');
+	if (children[2].textContent !== 'C' || children[2].value !== 'C') fail('option 2 is not as expected');
 
 	pass();
 });

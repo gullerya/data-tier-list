@@ -1,4 +1,4 @@
-import * as DataTier from '../node_modules/data-tier/dist/module/data-tier.js';
+import * as DataTier from '../node_modules/data-tier/dist/data-tier.js';
 import '../dist/data-tier-list.js';
 
 let
@@ -18,7 +18,7 @@ class Product {
 	}
 }
 
-suite.addTest({name: 'validate simple select options'}, async (pass, fail) => {
+suite.addTest({name: 'validate complex grid content (2000)'}, async (pass, fail) => {
 	e.innerHTML = `
 			<template is="data-tier-item-template" class="order" data-tie="productsComplexRepeater:products => items">
 				<div>
