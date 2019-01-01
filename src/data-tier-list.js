@@ -73,7 +73,7 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 				tmp = optTmpIdx[i];
 				view = views[tmp];
 				view.dataset.tie = view.dataset.tie.replace(/item:/g, prefix + index + '.');
-				view.dataset.tie = view.dataset.tie.replace(/item/g, prefix + index);
+				view.dataset.tie = view.dataset.tie.replace(/item\s*=/g, prefix + index + '=');
 			}
 			index === from ? result = tmpTemplate : result.appendChild(tmpTemplate);
 		}
