@@ -1,6 +1,6 @@
 {
   "name": "data-tier-list",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "List component based on DataTier binding engine",
   "keywords": [
     "datatier",
@@ -54,7 +54,7 @@
     "eslint-config-standard": "^13.0.1",
     "fs-extra": "^8.1.0",
     "uglify-es": "^3.3.9",
-    "just-test": "^1.0.0",
+    "just-test": "^1.1.0",
     "data-tier": "^1.7.1"
   }
 }
