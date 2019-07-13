@@ -1,10 +1,11 @@
+import { createSuite } from '../node_modules/just-test/dist/just-test.js';
 import * as DataTier from '../node_modules/data-tier/dist/data-tier.js';
 import '../dist/data-tier-list.js';
 
 let
-	suite = Utils.JustTest.createSuite({name: 'Complex cases - grid'}),
+	suite = createSuite({ name: 'Complex cases - grid' }),
 	e = document.createElement('div'),
-	t = DataTier.ties.create('productsComplexRepeater', {products: []}),
+	t = DataTier.ties.create('productsComplexRepeater', { products: [] }),
 	children;
 
 class Product {
@@ -18,7 +19,7 @@ class Product {
 	}
 }
 
-suite.addTest({name: 'validate complex grid content (2000)'}, async (pass, fail) => {
+suite.addTest({ name: 'validate complex grid content (2000)' }, async test => {
 	e.innerHTML = `
 			<template is="data-tier-item-template" class="order" data-tie="productsComplexRepeater:products => items">
 				<div>
@@ -49,7 +50,7 @@ suite.addTest({name: 'validate complex grid content (2000)'}, async (pass, fail)
 				t.model.products.push(new Product(
 					'name ' + i,
 					'description ' + i,
-					{city: 'Nowhere', street: 'Emptiness', number: i},
+					{ city: 'Nowhere', street: 'Emptiness', number: i },
 					i % 5 !== 0,
 					i % 5,
 					1000 + i
@@ -62,7 +63,7 @@ suite.addTest({name: 'validate complex grid content (2000)'}, async (pass, fail)
 
 	addProduct();
 
-	pass();
+	test.pass();
 });
 
 suite.run();
