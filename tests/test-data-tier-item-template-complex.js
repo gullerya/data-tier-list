@@ -2,11 +2,10 @@ import { createSuite } from '../node_modules/just-test/dist/just-test.js';
 import * as DataTier from '../node_modules/data-tier/dist/data-tier.js';
 import '../dist/data-tier-list.js';
 
-let
+const
 	suite = createSuite({ name: 'Complex cases - grid' }),
 	e = document.createElement('div'),
-	t = DataTier.ties.create('productsComplexRepeater', { products: [] }),
-	children;
+	t = DataTier.ties.create('productsComplexRepeater', { products: [] });
 
 class Product {
 	constructor(name, description, location, available, amount, price) {
