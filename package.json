@@ -43,18 +43,18 @@
     "build": "node ./build/tools/build-dist.js"
   },
   "peerDependencies": {
-    "data-tier": "^1.7.1"
+    "data-tier": "^1.10.0"
   },
   "devDependencies": {
-    "eslint": "^6.0.1",
-    "eslint-plugin-node": "^9.1.0",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint": "^6.2.2",
+    "eslint-plugin-node": "^9.2.0",
+    "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-config-standard": "^14.1.0",
     "fs-extra": "^8.1.0",
     "uglify-es": "^3.3.9",
     "just-test": "^1.1.0",
-    "data-tier": "^1.7.1"
+    "data-tier": "^1.10.0"
   }
 }

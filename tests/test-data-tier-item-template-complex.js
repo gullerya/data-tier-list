@@ -44,7 +44,7 @@ suite.addTest({ name: 'validate complex grid content (2000)' }, async test => {
 
 	function addProduct() {
 		window.requestAnimationFrame(() => {
-			let cycles = 5;
+			let cycles = 2;
 			while (--cycles) {
 				t.model.products.push(new Product(
 					'name ' + i,

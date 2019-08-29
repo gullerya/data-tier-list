@@ -84,7 +84,7 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 
 				rule = rule.replace(/item:/g, prefix + index + '.');
 				rule = rule.replace(/item\s*=/g, prefix + index + '=');
-				rule = rule.replace(/item(?![\.a-zA-Z0-9])/g, prefix + index);
+				rule = rule.replace(/item(?![.a-zA-Z0-9])/g, prefix + index);
 
 				view.dataset.tie = rule;
 			}
