@@ -42,26 +42,31 @@ suite.runTest({ name: 'validate complex grid content (2000)' }, async test => {
 	//	add products data one by one
 	let i = 2000;
 
-	function addProduct() {
-		window.requestAnimationFrame(() => {
-			let cycles = 16;
-			while (--cycles && i > 0) {
-				t.products.push(new Product(
-					'name ' + i,
-					'description ' + i,
-					{ city: 'Nowhere', street: 'Emptiness', number: i },
-					i % 5 !== 0,
-					i % 5,
-					1000 + i
-				));
-				i--;
-				if (i && i % 180 === 0) {
-					t.products.splice(0);
+	const ep = new Promise(resolve => {
+		function addProduct() {
+			window.requestAnimationFrame(() => {
+				let cycles = 16;
+				while (--cycles && i > 0) {
+					t.products.push(new Product(
+						'name ' + i,
+						'description ' + i,
+						{ city: 'Nowhere', street: 'Emptiness', number: i },
+						i % 5 !== 0,
+						i % 5,
+						1000 + i
+					));
+					i--;
+					if (i && i % 180 === 0) {
+						t.products.splice(0);
+					}
 				}
-			}
-			if (i > 0) addProduct();
-		});
-	}
+				if (i > 0) addProduct();
+				else resolve();
+			});
+		}
 
-	addProduct();
+		addProduct();
+	});
+
+	await ep;
 });
