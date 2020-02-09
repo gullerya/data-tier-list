@@ -1,10 +1,10 @@
-import { createSuite } from '../node_modules/just-test/dist/just-test.js';
+import { getSuite } from '../node_modules/just-test/dist/just-test.js';
 import * as DataTier from '../node_modules/data-tier/dist/data-tier.js';
 import '../dist/data-tier-list.js';
 
-const suite = createSuite({ name: 'Tying syntaxes' });
+const suite = getSuite({ name: 'Tying syntaxes' });
 
-suite.addTest({ name: 'shortest syntax' }, async test => {
+suite.runTest({ name: 'shortest syntax' }, async test => {
 	const tie = DataTier.ties.create('shortestSyntaxTest', [
 		'A', 'B', 'C'
 	]),
@@ -26,8 +26,4 @@ suite.addTest({ name: 'shortest syntax' }, async test => {
 	if (children[2].textContent !== 'C' || children[2].value !== 'C') test.fail('item 2 is not as expected');
 
 	DataTier.ties.remove(tie);
-
-	test.pass();
 });
-
-suite.run();

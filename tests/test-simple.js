@@ -1,10 +1,10 @@
-import { createSuite } from '../node_modules/just-test/dist/just-test.js';
+import { getSuite } from '../node_modules/just-test/dist/just-test.js';
 import * as DataTier from '../node_modules/data-tier/dist/data-tier.js';
 import '../dist/data-tier-list.js';
 
-const suite = createSuite({ name: 'Simple cases - select' });
+const suite = getSuite({ name: 'Simple cases - select' });
 
-suite.addTest({ name: 'validate simple select options' }, async test => {
+suite.runTest({ name: 'validate simple select options' }, async test => {
 	let t = DataTier.ties.create('selectA', {
 		options: [
 			{ text: 'TEXT 1', value: 1 },
@@ -29,7 +29,7 @@ suite.addTest({ name: 'validate simple select options' }, async test => {
 	if (children[2].textContent !== 'TEXT 3' || children[2].value !== '3') test.fail('[initial] option 2 is not as expected');
 
 	//	PUSH
-	t.model.options.push({ text: 'TEXT 4', value: 4 });
+	t.options.push({ text: 'TEXT 4', value: 4 });
 	await new Promise(res => setTimeout(res, 0));
 	children = e.querySelectorAll('option');
 	if (children.length !== 4) test.fail('expected to have 4 options, found ' + children.length);
@@ -39,7 +39,7 @@ suite.addTest({ name: 'validate simple select options' }, async test => {
 	if (children[3].textContent !== 'TEXT 4' || children[3].value !== '4') test.fail('[push] option 3 is not as expected');
 
 	//	UNSHIFT
-	t.model.options.unshift({ text: 'TEXT 0', value: 0 });
+	t.options.unshift({ text: 'TEXT 0', value: 0 });
 	await new Promise(res => setTimeout(res, 0));
 	children = e.querySelectorAll('option');
 	if (children.length !== 5) test.fail('expected to have 5 options, found ' + children.length);
@@ -50,15 +50,15 @@ suite.addTest({ name: 'validate simple select options' }, async test => {
 	if (children[4].textContent !== 'TEXT 4' || children[4].value !== '4') test.fail('[unshift] option 4 is not as expected');
 
 	//	FIRST and LAST item mutation
-	t.model.options[0].text = 'TEXT FIRST';
-	t.model.options[4].text = 'TEXT LAST';
+	t.options[0].text = 'TEXT FIRST';
+	t.options[4].text = 'TEXT LAST';
 	children = e.querySelectorAll('option');
 	if (children[0].textContent !== 'TEXT FIRST') test.fail('[modify] option 0 is not as expected');
 	if (children[4].textContent !== 'TEXT LAST') test.fail('[modify] option 4 is not as expected');
 
 	//	SHIFT
-	t.model.options.shift();
-	t.model.options[0].text = 'TEXT NEW FIRST';
+	t.options.shift();
+	t.options[0].text = 'TEXT NEW FIRST';
 	await new Promise(res => setTimeout(res, 0));
 
 	children = e.querySelectorAll('option');
@@ -69,7 +69,7 @@ suite.addTest({ name: 'validate simple select options' }, async test => {
 	if (children[3].textContent !== 'TEXT LAST' || children[3].value !== '4') test.fail('[shift] option 3 is not as expected');
 
 	//	POP
-	t.model.options.pop();
+	t.options.pop();
 	await new Promise(res => setTimeout(res, 0));
 	children = e.querySelectorAll('option');
 	if (children.length !== 3) test.fail('expected to have 3 options, found ' + children.length);
@@ -78,19 +78,16 @@ suite.addTest({ name: 'validate simple select options' }, async test => {
 	if (children[2].textContent !== 'TEXT 3' || children[2].value !== '3') test.fail('[pop] option 2 is not as expected');
 
 	//	REVERSE
-	t.model.options.reverse();
+	t.options.reverse();
 	await new Promise(res => setTimeout(res, 0));
 	children = e.querySelectorAll('option');
 	if (children.length !== 3) test.fail('expected to have 3 options, found ' + children.length);
 	if (children[0].textContent !== 'TEXT 3' || children[0].value !== '3') test.fail('[reverse] option 0 is not as expected');
 	if (children[1].textContent !== 'TEXT 2' || children[1].value !== '2') test.fail('[reverse] option 1 is not as expected');
 	if (children[2].textContent !== 'TEXT NEW FIRST' || children[2].value !== '1') test.fail('[reverse] option 2 is not as expected');
-
-	test.pass();
 });
 
-
-suite.addTest({ name: 'validate binding item as a whole' }, async test => {
+suite.runTest({ name: 'validate binding item as a whole' }, async test => {
 	let tie = DataTier.ties.create('wholeItem', [
 		'A', 'B', 'C'
 	]),
@@ -110,8 +107,4 @@ suite.addTest({ name: 'validate binding item as a whole' }, async test => {
 	if (children[0].textContent !== 'A' || children[0].value !== 'A') test.fail('option 0 is not as expected');
 	if (children[1].textContent !== 'B' || children[1].value !== 'B') test.fail('option 1 is not as expected');
 	if (children[2].textContent !== 'C' || children[2].value !== 'C') test.fail('option 2 is not as expected');
-
-	test.pass();
 });
-
-suite.run();

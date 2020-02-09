@@ -1,11 +1,11 @@
-import { createSuite } from '../node_modules/just-test/dist/just-test.js';
+import { getSuite } from '../node_modules/just-test/dist/just-test.js';
 import * as DataTier from '../node_modules/data-tier/dist/data-tier.js';
 import '../dist/data-tier-list.js';
 
 const
-	suite = createSuite({ name: 'Complex cases - grid' }),
+	suite = getSuite({ name: 'Complex cases - grid' }),
 	e = document.createElement('div'),
-	t = DataTier.ties.create('productsComplexRepeater', { products: [] });
+	t = window.t = DataTier.ties.create('productsComplexRepeater', { products: [] });
 
 class Product {
 	constructor(name, description, location, available, amount, price) {
@@ -18,19 +18,19 @@ class Product {
 	}
 }
 
-suite.addTest({ name: 'validate complex grid content (2000)' }, async test => {
+suite.runTest({ name: 'validate complex grid content (2000)' }, async test => {
 	e.innerHTML = `
 			<template is="data-tier-item-template" class="order" data-tie="productsComplexRepeater:products => items">
 				<div>
 					<span data-tie="item:name => textContent"></span>
-					<span data-tie="item:description => textContent"></span>
-					<input type="checkbox" data-tie="item:available => value"/>
-					<span data-tie="item:amount => textContent"></span>
-					<span>$<span data-tie="item:price => textContent"></span></span>
+					<span data-tie="item:description"></span>
+					<input type="checkbox" data-tie="item:available"/>
+					<span data-tie="item:amount"></span>
+					<span>$<span data-tie="item:price"></span></span>
 					<div>
 						<span data-tie="item:location.city => textContent"></span>
-						<span data-tie="item:location.street => textContent"></span>
-						<span data-tie="item:location.number => textContent"></span>
+						<span data-tie="item:location.street"></span>
+						<span data-tie="item:location.number"></span>
 					</div>
 				</div>
 			</template>`;
@@ -44,9 +44,9 @@ suite.addTest({ name: 'validate complex grid content (2000)' }, async test => {
 
 	function addProduct() {
 		window.requestAnimationFrame(() => {
-			let cycles = 2;
-			while (--cycles) {
-				t.model.products.push(new Product(
+			let cycles = 4;
+			while (--cycles && i > 0) {
+				t.products.push(new Product(
 					'name ' + i,
 					'description ' + i,
 					{ city: 'Nowhere', street: 'Emptiness', number: i },
@@ -56,13 +56,9 @@ suite.addTest({ name: 'validate complex grid content (2000)' }, async test => {
 				));
 				i--;
 			}
-			if (i) addProduct();
+			if (i > 0) addProduct();
 		});
 	}
 
 	addProduct();
-
-	test.pass();
 });
-
-suite.run();

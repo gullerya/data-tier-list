@@ -1,0 +1,15 @@
+{
+	"tests": {
+		"url": "/tests/test.html",
+		"ttl": 84000,
+		"maxSkip": 1
+	},
+	"coverage": {
+		"include": [
+			"^\/dist\/.+"
+		]
+	},
+	"reports": {
+		"folder": "./reports"
+	}
+}

@@ -29,32 +29,34 @@
   "files": [
     "dist"
   ],
-  "main": "dist/data-tier-list.min.js",
+  "browser": "dist/data-tier-list.min.js",
   "author": {
     "name": "Guller Yuri",
     "email": "gullerya@gmail.com"
   },
+  "funding": "https://paypal.me/gullerya?locale.x=en_US",
   "repository": {
     "type": "git",
     "url": "https://github.com/gullerya/data-tier-list"
   },
   "scripts": {
     "eslint": "eslint -c ./build/.eslintrc.json ./src/**/*.js",
-    "build": "node ./build/tools/build-dist.js"
+    "build": "node ./build/tools/build-dist.js",
+    "test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-run-config.json"
   },
   "peerDependencies": {
-    "data-tier": "^1.10.0"
+    "data-tier": "^2.5.1"
   },
   "devDependencies": {
-    "eslint": "^6.2.2",
-    "eslint-plugin-node": "^9.2.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
+    "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-standard": "^4.0.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
     "fs-extra": "^8.1.0",
     "uglify-es": "^3.3.9",
-    "just-test": "^1.1.0",
-    "data-tier": "^1.10.0"
+    "just-test": "^2.3.0",
+    "data-tier": "^2.5.1"
   }
 }

@@ -1,8 +1,8 @@
-import { createSuite } from '../node_modules/just-test/dist/just-test.js';
+import { getSuite } from '../node_modules/just-test/dist/just-test.js';
 import * as DataTier from '../node_modules/data-tier/dist/data-tier.min.js';
 import '../dist/data-tier-list.js';
 
-const suite = createSuite({ name: 'Complex cases - grid' });
+const suite = getSuite({ name: 'Complex cases - grid' });
 
 customElements.define('list-in-ce-a', class extends HTMLElement {
 	constructor() {
@@ -21,7 +21,7 @@ customElements.define('item-in-ce-list', class extends HTMLElement {
 	}
 });
 
-suite.addTest({ name: 'validate list within custom element' }, async test => {
+suite.runTest({ name: 'validate list within custom element' }, async test => {
 	DataTier.ties.create('testListCEA', [
 		'item-a', 'item-b', 'item-c'
 	]);
@@ -34,8 +34,4 @@ suite.addTest({ name: 'validate list within custom element' }, async test => {
 
 	//	initial insert
 	document.body.appendChild(ce);
-
-	test.pass();
 });
-
-suite.run();

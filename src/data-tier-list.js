@@ -1,5 +1,5 @@
 const
-	ITEMS_KEY = Symbol('data.tier.items.key');
+	ITEMS_KEY = Symbol('items.key');
 
 class DataTierItemTemplate extends HTMLTemplateElement {
 	constructor() {
