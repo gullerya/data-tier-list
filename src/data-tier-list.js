@@ -1,26 +1,15 @@
 const
-	ITEMS_KEY = Symbol('items.key');
+	OPTIMIZATION_MAP_KEY = Symbol('optimization.map.key');
 
 class DataTierItemTemplate extends HTMLTemplateElement {
-	constructor() {
-		super();
-		this[ITEMS_KEY] = [];
-	}
-
 	get defaultTieTarget() {
 		return 'items';
-	}
-
-	get items() {
-		return this[ITEMS_KEY];
 	}
 
 	set items(newItemsList) {
 		if (!Array.isArray(newItemsList)) {
 			return;
 		}
-
-		this[ITEMS_KEY] = newItemsList;
 
 		const
 			container = this.parentNode,
@@ -67,11 +56,11 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 	static insertNewContent(container, template, controllerParameters, from, to) {
 		const
 			prefix = controllerParameters[0] + (controllerParameters[0].indexOf(':') < 0 ? ':' : '.'),
-			optimizationMap = DataTierItemTemplate.prepareOptimizationMap(template),
+			optimizationMap = DataTierItemTemplate.getOptimizationMap(template),
 			optTmpIdx = optimizationMap.index,
 			tmpContent = template.content;
 
-		let result = null, tmpTemplate, index = from, i, tmp, views, view, rule;
+		let result = null, tmpTemplate, index = from, i, tmp, views, view;
 
 		for (; index < to; index++) {
 			tmpTemplate = tmpContent.cloneNode(true);
@@ -80,13 +69,10 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 			while (i--) {
 				tmp = optTmpIdx[i];
 				view = views[tmp];
-				rule = view.dataset.tie;
-
-				rule = rule.replace(/item:/g, prefix + index + '.');
-				rule = rule.replace(/item\s*=/g, prefix + index + '=');
-				rule = rule.replace(/item(?![.a-zA-Z0-9])/g, prefix + index);
-
-				view.dataset.tie = rule;
+				view.dataset.tie = view.dataset.tie
+					.replace(/item:/g, prefix + index + '.')
+					.replace(/item\s*=/g, prefix + index + '=')
+					.replace(/item(?![.a-zA-Z0-9])/g, prefix + index);
 			}
 			index === from ? result = tmpTemplate : result.appendChild(tmpTemplate);
 		}
@@ -96,21 +82,24 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 
 	//	extract and index all the data-tied elements from the template so that on each clone the pre-processing will be based on this index
 	//	we just need to know which elements (index of array-like, outcome of 'querySelectorAll(*)') are relevant
-	static prepareOptimizationMap(template) {
-		const
-			result = { index: [] },
-			views = template.content.querySelectorAll('*');
-		let i = views.length, view;
-		while (i--) {
-			view = views[i];
-			if (view.dataset && typeof view.dataset.tie === 'string') {
-				result.index.push(i);
+	static getOptimizationMap(template) {
+		let result = template[OPTIMIZATION_MAP_KEY];
+		if (!result) {
+			result = { index: [] };
+			const views = template.content.querySelectorAll('*');
+			let i = views.length, view;
+			while (i--) {
+				view = views[i];
+				if (view.dataset && typeof view.dataset.tie === 'string') {
+					result.index.push(i);
+				}
 			}
+			template[OPTIMIZATION_MAP_KEY] = result;
 		}
 		return result;
 	}
 }
 
-if (!customElements.get('data-tier-item-template')) {
-	customElements.define('data-tier-item-template', DataTierItemTemplate, { extends: 'template' });
+if (!customElements.get('data-tier-list')) {
+	customElements.define('data-tier-list', DataTierItemTemplate, { extends: 'template' });
 }

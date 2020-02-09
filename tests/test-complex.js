@@ -20,7 +20,7 @@ class Product {
 
 suite.runTest({ name: 'validate complex grid content (2000)' }, async test => {
 	e.innerHTML = `
-			<template is="data-tier-item-template" class="order" data-tie="productsComplexRepeater:products => items">
+			<template is="data-tier-list" class="order" data-tie="productsComplexRepeater:products => items">
 				<div>
 					<span data-tie="item:name => textContent"></span>
 					<span data-tie="item:description"></span>
@@ -44,7 +44,7 @@ suite.runTest({ name: 'validate complex grid content (2000)' }, async test => {
 
 	function addProduct() {
 		window.requestAnimationFrame(() => {
-			let cycles = 4;
+			let cycles = 16;
 			while (--cycles && i > 0) {
 				t.products.push(new Product(
 					'name ' + i,
@@ -55,6 +55,9 @@ suite.runTest({ name: 'validate complex grid content (2000)' }, async test => {
 					1000 + i
 				));
 				i--;
+				if (i && i % 180 === 0) {
+					t.products.splice(0);
+				}
 			}
 			if (i > 0) addProduct();
 		});
