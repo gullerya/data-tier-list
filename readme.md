@@ -1,6 +1,9 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![npm](https://img.shields.io/npm/v/data-tier-list.svg)](https://www.npmjs.com/package/data-tier-list)
-[![Travis (.org)](https://img.shields.io/travis/gullerya/data-tier-list.svg)](https://travis-ci.org/gullerya/data-tier-list)
+[![GitHub](https://img.shields.io/github/license/gullerya/data-tier-list.svg)](https://github.com/gullerya/data-tier-list)
+[![NPM](https://img.shields.io/npm/v/data-tier-list.svg?label=npm%20data-tier-list)](https://www.npmjs.com/package/data-tier-list)
+[![Travis](https://img.shields.io/travis/gullerya/data-tier-list.svg)](https://travis-ci.org/gullerya/data-tier-list)
+[![Codecov](https://img.shields.io/codecov/c/github/gullerya/data-tier-list/master.svg)](https://codecov.io/gh/gullerya/data-tier-list/branch/master)
+[![Codacy](https://img.shields.io/codacy/grade/eb34053e002648519fd3a2d78c45677b.svg?logo=codacy)](https://app.codacy.com/app/gullerya/data-tier-list)
+
 
 ## Overview
 
