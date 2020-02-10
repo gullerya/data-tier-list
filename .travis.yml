@@ -8,8 +8,7 @@ install:
 script:
 - npm run eslint
 - npm run test
-
-bash <(curl -s https://codecov.io/bash) -t 923d0572-de75-4e73-8593-3f461bee4a9d
+- bash <(curl -s https://codecov.io/bash) -t 923d0572-de75-4e73-8593-3f461bee4a9d
 
 cache:
   directories:
