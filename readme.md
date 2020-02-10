@@ -4,7 +4,6 @@
 [![Codecov](https://img.shields.io/codecov/c/github/gullerya/data-tier-list/master.svg)](https://codecov.io/gh/gullerya/data-tier-list/branch/master)
 [![Codacy](https://img.shields.io/codacy/grade/056de1a3a7c740678d517a0ee0b41b4f.svg?logo=codacy)](https://app.codacy.com/app/gullerya/data-tier-list)
 
-
 ## Overview
 
 `data-tier-list` is a WebComponent based on a [DataTier library](https://github.com/gullerya/data-tier) and providing visualization of a repeated contents.

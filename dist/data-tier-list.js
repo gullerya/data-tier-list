@@ -74,7 +74,11 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 					.replace(/item\s*=/g, prefix + index + '=')
 					.replace(/item(?![.a-zA-Z0-9])/g, prefix + index);
 			}
-			index === from ? result = tmpTemplate : result.appendChild(tmpTemplate);
+			if (index === from) {
+				result = tmpTemplate;
+			} else {
+				result.appendChild(tmpTemplate);
+			}
 		}
 
 		container.appendChild(result);
@@ -88,7 +92,8 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 			result = { index: [] };
 			const views = template.content.querySelectorAll('*');
 			let i = views.length, view;
-			while (i--) {
+			while (i) {
+				i--;
 				view = views[i];
 				if (view.dataset && typeof view.dataset.tie === 'string') {
 					result.index.push(i);
