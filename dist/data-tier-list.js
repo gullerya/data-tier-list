@@ -1,116 +1,125 @@
 import * as DataTier from './data-tier/data-tier.min.js';
 
 const
-	OPTIMIZATION_MAP_KEY = Symbol('optimization.map.key');
+	LISTS_MODEL_TIE_NAME = 'listsModel',
+	listsModel = DataTier.ties.create(LISTS_MODEL_TIE_NAME),
+	SEQUENCE_ID_KEY = Symbol('sequence.id'),
+	INDEX_PLACEHOLDER = 'dtl_index_placeholder',
+	PREPARED_TEMPLATE_KEY = Symbol('prepared.template');
 
-class DataTierList extends HTMLTemplateElement {
+let sequencer = 1;
+
+class DataTierList extends HTMLElement {
 	constructor() {
+		super();
+		this[SEQUENCE_ID_KEY] = sequencer++;
+		this.attachShadow({ mode: 'open' }).innerHTML = '<slot></slot>';
+		this.shadowRoot.firstElementChild.addEventListener('slotchange', event => {
+			const templateNodes = event.target.assignedNodes().filter(n => n.nodeType === Node.ELEMENT_NODE);
+			if (templateNodes.length !== 1) {
+				console.error(`list item template MUST have onle 1 root element, got ${templateNodes.length}`);
+				return;
+			}
+			this.preprocessTemplate(templateNodes[0]);
+			this.fullUpdate();
+		});
+	}
 
+	connectedCallback() {
+		this.style.display = 'none';
+		this.setAttribute('data-tier-blackbox', '1');
+		listsModel[this[SEQUENCE_ID_KEY]] = [];
+	}
+
+	disconnectedCallback() {
+		delete listsModel[this[SEQUENCE_ID_KEY]];
 	}
 
 	get defaultTieTarget() {
 		return 'items';
 	}
 
-	set items(newItemsList) {
-		if (!Array.isArray(newItemsList)) {
+	set items(items) {
+		if (!Array.isArray(items)) {
+			console.error(`array of items expected, but got '${items}'`);
+			return;
+		}
+
+		for (let i = 0, l = items.length; i < l; i++) {
+			if (i >= listsModel[this[SEQUENCE_ID_KEY]].length) {
+				listsModel[this[SEQUENCE_ID_KEY]].push(items[i]);
+			}
+		}
+		// listsModel[this[SEQUENCE_ID_KEY]] = items;
+
+		this.fullUpdate();
+	}
+
+	resolveTargetContainer() {
+		let result = this.parentElement;
+		const attr = this.getAttribute('data-list-target');
+		if (attr) {
+			result = this.getRootNode().querySelector(attr);
+		}
+		return result;
+	}
+
+	fullUpdate() {
+		if (!this[PREPARED_TEMPLATE_KEY]) {
 			return;
 		}
 
 		const
-			container = this.parentNode,
-			fceDataSet = this.content.firstElementChild.dataset,
-			desiredListLength = newItemsList.length;
+			targetContainer = this.resolveTargetContainer(),
+			inParentAdjust = targetContainer.contains(this) ? 1 : 0,
+			desiredListLength = listsModel[this[SEQUENCE_ID_KEY]].length;
+		let currentListLength = targetContainer.childElementCount - inParentAdjust,
+			lastElementChild;
 
-		let
-			ruleData,
-			templateItemAid;
-
-		templateItemAid = fceDataSet.dtListItemAid;
-		if (!templateItemAid) {
-			templateItemAid = new Date().getTime();
-			fceDataSet.dtListItemAid = templateItemAid;
+		while (currentListLength > desiredListLength) {
+			lastElementChild = targetContainer.lastElementChild;
+			if (lastElementChild !== this) {
+				targetContainer.removeChild(lastElementChild);
+			}
+			currentListLength--;
 		}
 
-		//	adjust list elements size to the data length
-		const existingList = container.querySelectorAll('[data-dt-list-item-aid="' + templateItemAid + '"]');
-		let existingListLength = existingList.length;
-
-		//	remove extra items, if any
-		if (existingListLength > desiredListLength) {
-			while (existingListLength > desiredListLength) container.removeChild(existingList[--existingListLength]);
+		let appendContent = '';
+		const replaceAll = new RegExp(INDEX_PLACEHOLDER, 'g');
+		while (currentListLength < desiredListLength) {
+			appendContent += this[PREPARED_TEMPLATE_KEY].replace(replaceAll, currentListLength);
+			currentListLength++;
 		}
-
-		//	add missing items, if any
-		if (existingListLength < desiredListLength) {
-			ruleData = DataTierList.extractControllerParameters(this.dataset.tie);
-			DataTierList.insertNewContent(container, this, ruleData, existingListLength, desiredListLength);
+		if (appendContent) {
+			const t = document.createElement('template');
+			t.innerHTML = appendContent;
+			targetContainer.appendChild(t.content);
 		}
 	}
 
-	static extractControllerParameters(paramValue) {
-		let procParam;
-		if (paramValue) {
-			procParam = paramValue.trim().split(/\s+=>\s+/);
-			if (!procParam || !procParam.length) {
-				throw new Error('invalid DataTier configuration');
+	preprocessTemplate(template) {
+		const replacer = `${LISTS_MODEL_TIE_NAME}:${this[SEQUENCE_ID_KEY]}.${INDEX_PLACEHOLDER}`;
+		const detached = template.cloneNode(true);
+		const els = [detached];
+		if (detached.childElementCount) {
+			Array.prototype.push.apply(els, detached.querySelectorAll('*'));
+		}
+		let i = els.length, next, attr;
+		while (i) {
+			next = els[--i];
+			attr = next.getAttribute('data-tie');
+			if (attr) {
+				next.setAttribute('data-tie', attr
+					.replace(/item:/g, `${replacer}.`)
+					.replace(/item\s*=/g, `${replacer}=`)
+					.replace(/item(?![.a-zA-Z0-9])/g, `${replacer}`)
+				);
 			}
 		}
-		return procParam;
-	}
-
-	static insertNewContent(container, template, controllerParameters, from, to) {
-		const
-			prefix = controllerParameters[0] + (controllerParameters[0].indexOf(':') < 0 ? ':' : '.'),
-			optimizationMap = DataTierList.getOptimizationMap(template),
-			optTmpIdx = optimizationMap.index,
-			tmpContent = template.content;
-
-		let result = null, tmpTemplate, index = from, i, tmp, views, view;
-
-		for (; index < to; index++) {
-			tmpTemplate = tmpContent.cloneNode(true);
-			views = tmpTemplate.querySelectorAll('*');
-			i = optTmpIdx.length;
-			while (i--) {
-				tmp = optTmpIdx[i];
-				view = views[tmp];
-				view.dataset.tie = view.dataset.tie
-					.replace(/item:/g, prefix + index + '.')
-					.replace(/item\s*=/g, prefix + index + '=')
-					.replace(/item(?![.a-zA-Z0-9])/g, prefix + index);
-			}
-			if (index === from) {
-				result = tmpTemplate;
-			} else {
-				result.appendChild(tmpTemplate);
-			}
-		}
-
-		container.appendChild(result);
-	}
-
-	//	extract and index all the data-tied elements from the template so that on each clone the pre-processing will be based on this index
-	//	we just need to know which elements (index of array-like, outcome of 'querySelectorAll(*)') are relevant
-	static getOptimizationMap(template) {
-		let result = template[OPTIMIZATION_MAP_KEY];
-		if (!result) {
-			result = { index: [] };
-			const views = template.content.querySelectorAll('*');
-			let i = views.length, view;
-			while (i) {
-				i--;
-				view = views[i];
-				if (view.dataset && typeof view.dataset.tie === 'string') {
-					result.index.push(i);
-				}
-			}
-			template[OPTIMIZATION_MAP_KEY] = result;
-		}
-		return result;
+		this[PREPARED_TEMPLATE_KEY] = detached.outerHTML;
 	}
 }
 
 if (!customElements.get('data-tier-list')) {
-	customElements.define('data-tier-list', DataTierList, { extends: 'template' });
+	customElements.define('data-tier-list', DataTierList);
 }
