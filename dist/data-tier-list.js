@@ -1,7 +1,13 @@
+import * as DataTier from './data-tier/data-tier.min.js';
+
 const
 	OPTIMIZATION_MAP_KEY = Symbol('optimization.map.key');
 
-class DataTierItemTemplate extends HTMLTemplateElement {
+class DataTierList extends HTMLTemplateElement {
+	constructor() {
+
+	}
+
 	get defaultTieTarget() {
 		return 'items';
 	}
@@ -37,8 +43,8 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 
 		//	add missing items, if any
 		if (existingListLength < desiredListLength) {
-			ruleData = DataTierItemTemplate.extractControllerParameters(this.dataset.tie);
-			DataTierItemTemplate.insertNewContent(container, this, ruleData, existingListLength, desiredListLength);
+			ruleData = DataTierList.extractControllerParameters(this.dataset.tie);
+			DataTierList.insertNewContent(container, this, ruleData, existingListLength, desiredListLength);
 		}
 	}
 
@@ -56,7 +62,7 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 	static insertNewContent(container, template, controllerParameters, from, to) {
 		const
 			prefix = controllerParameters[0] + (controllerParameters[0].indexOf(':') < 0 ? ':' : '.'),
-			optimizationMap = DataTierItemTemplate.getOptimizationMap(template),
+			optimizationMap = DataTierList.getOptimizationMap(template),
 			optTmpIdx = optimizationMap.index,
 			tmpContent = template.content;
 
@@ -106,5 +112,5 @@ class DataTierItemTemplate extends HTMLTemplateElement {
 }
 
 if (!customElements.get('data-tier-list')) {
-	customElements.define('data-tier-list', DataTierItemTemplate, { extends: 'template' });
+	customElements.define('data-tier-list', DataTierList, { extends: 'template' });
 }

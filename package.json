@@ -40,12 +40,12 @@
     "url": "https://github.com/gullerya/data-tier-list"
   },
   "scripts": {
-    "eslint": "eslint -c ./build/.eslintrc.json ./src/**/*.js",
+    "eslint": "eslint -c ./build/.eslintrc.json --ignore-path ./build/.eslintignore ./src/**/*.js",
     "build": "node ./build/tools/build-dist.js",
     "test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json"
   },
   "peerDependencies": {
-    "data-tier": "^2.5.1"
+    "data-tier": "^2.6.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
@@ -57,6 +57,6 @@
     "fs-extra": "^8.1.0",
     "uglify-es": "^3.3.9",
     "just-test": "^2.3.0",
-    "data-tier": "^2.5.1"
+    "data-tier": "^2.6.0"
   }
 }
