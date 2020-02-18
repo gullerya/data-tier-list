@@ -1,8 +1,7 @@
 import * as DataTier from './data-tier/data-tier.min.js';
 
 const
-	LISTS_MODEL_TIE_NAME = 'listsModel',
-	listsModel = DataTier.ties.create(LISTS_MODEL_TIE_NAME),
+	LISTS_MODEL_TIE_NAME = 'listModel',
 	SEQUENCE_ID_KEY = Symbol('sequence.id'),
 	INDEX_PLACEHOLDER = 'dtl_index_placeholder',
 	PREPARED_TEMPLATE_KEY = Symbol('prepared.template');
@@ -28,11 +27,12 @@ class DataTierList extends HTMLElement {
 	connectedCallback() {
 		this.style.display = 'none';
 		this.setAttribute('data-tier-blackbox', '1');
-		listsModel[this[SEQUENCE_ID_KEY]] = [];
+		const t = DataTier.ties.create(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY], []);
+		t.observe(changes => this.processModelChanges(changes));
 	}
 
 	disconnectedCallback() {
-		delete listsModel[this[SEQUENCE_ID_KEY]];
+		DataTier.ties.remove(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY]);
 	}
 
 	get defaultTieTarget() {
@@ -45,18 +45,12 @@ class DataTierList extends HTMLElement {
 			return;
 		}
 
-		listsModel[this[SEQUENCE_ID_KEY]] = items;
-
-		this.fullUpdate();
+		const m = DataTier.ties.get(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY]);
+		m.splice(0, m.length, ...items);
 	}
 
-	resolveTargetContainer() {
-		let result = this.parentElement;
-		const attr = this.getAttribute('data-list-target');
-		if (attr) {
-			result = this.getRootNode().querySelector(attr);
-		}
-		return result;
+	get items() {
+		return DataTier.ties.get(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY]);
 	}
 
 	fullUpdate() {
@@ -67,7 +61,7 @@ class DataTierList extends HTMLElement {
 		const
 			targetContainer = this.resolveTargetContainer(),
 			inParentAdjust = targetContainer.contains(this) ? 1 : 0,
-			desiredListLength = listsModel[this[SEQUENCE_ID_KEY]].length;
+			desiredListLength = DataTier.ties.get(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY]).length;
 		let currentListLength = targetContainer.childElementCount - inParentAdjust,
 			lastElementChild;
 
@@ -92,8 +86,33 @@ class DataTierList extends HTMLElement {
 		}
 	}
 
+	processModelChanges(changes) {
+		if (changes.some(c => c.type === 'shuffle')) {
+			this.fullUpdate();
+		} else {
+			const newItemTmp = document.createElement('template');
+			const replaceAll = new RegExp(INDEX_PLACEHOLDER, 'g');
+			changes.forEach(change => {
+				if (change.type === 'insert') {
+					let tmp = this[PREPARED_TEMPLATE_KEY].replace(replaceAll, currentListLength);
+				} else if (change.type === 'delete') {
+
+				}
+			});
+		}
+	}
+
+	resolveTargetContainer() {
+		let result = this.parentElement;
+		const attr = this.getAttribute('data-list-target');
+		if (attr) {
+			result = this.getRootNode().querySelector(attr);
+		}
+		return result;
+	}
+
 	preprocessTemplate(template) {
-		const replacer = `${LISTS_MODEL_TIE_NAME}:${this[SEQUENCE_ID_KEY]}.${INDEX_PLACEHOLDER}`;
+		const replacer = `${LISTS_MODEL_TIE_NAME}${this[SEQUENCE_ID_KEY]}:${INDEX_PLACEHOLDER}`;
 		const detached = template.cloneNode(true);
 		const els = [detached];
 		if (detached.childElementCount) {

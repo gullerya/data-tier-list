@@ -45,7 +45,7 @@
     "test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json"
   },
   "peerDependencies": {
-    "data-tier": "^2.6.0"
+    "data-tier": "^2.7.0"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

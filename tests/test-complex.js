@@ -48,7 +48,7 @@ suite.runTest({ name: 'validate complex grid content (2000)' }, async test => {
 			window.requestAnimationFrame(() => {
 				let cycles = 16;
 				while (--cycles && i > 0) {
-					t.products.push(new Product(
+					e.firstElementChild.items.push(new Product(
 						'name ' + i,
 						'description ' + i,
 						{ city: 'Nowhere', street: 'Emptiness', number: i },
@@ -58,7 +58,7 @@ suite.runTest({ name: 'validate complex grid content (2000)' }, async test => {
 					));
 					i--;
 					if (i && i % 180 === 0) {
-						t.products.splice(0);
+						e.firstElementChild.items.splice(0);
 					}
 				}
 				if (i > 0) addProduct();
