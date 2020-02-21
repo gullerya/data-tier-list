@@ -22,15 +22,15 @@ suite.runTest({ name: 'validate complex grid content (2000)' }, async test => {
 	e.innerHTML = `
 		<data-tier-list class="order" data-tie="productsComplexRepeater:products => items">
 			<div>
-				<span data-tie="item:name => textContent"></span>
-				<span data-tie="item:description"></span>
-				<input type="checkbox" data-tie="item:available"/>
-				<span data-tie="item:amount"></span>
-				<span>$<span data-tie="item:price"></span></span>
+				<span data-tie="scope:name => textContent"></span>
+				<span data-tie="scope:description"></span>
+				<input type="checkbox" data-tie="scope:available"/>
+				<span data-tie="scope:amount"></span>
+				<span>$<span data-tie="scope:price"></span></span>
 				<div>
-					<span data-tie="item:location.city => textContent"></span>
-					<span data-tie="item:location.street"></span>
-					<span data-tie="item:location.number"></span>
+					<span data-tie="scope:location.city => textContent"></span>
+					<span data-tie="scope:location.street"></span>
+					<span data-tie="scope:location.number"></span>
 				</div>
 			</div>
 		</data-tier-list>

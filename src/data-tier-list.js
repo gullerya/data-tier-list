@@ -1,9 +1,7 @@
 import * as DataTier from './data-tier/data-tier.min.js';
 
 const
-	LISTS_MODEL_TIE_NAME = 'listModel',
 	SEQUENCE_ID_KEY = Symbol('sequence.id'),
-	INDEX_PLACEHOLDER = 'dtl_index_placeholder',
 	PREPARED_TEMPLATE_KEY = Symbol('prepared.template');
 
 let sequencer = 1;
@@ -11,6 +9,8 @@ let sequencer = 1;
 class DataTierList extends HTMLElement {
 	constructor() {
 		super();
+		const model = DataTier.ties.create(this, []);
+		model.observe(() => this.fullUpdate());
 		this[SEQUENCE_ID_KEY] = sequencer++;
 		this.attachShadow({ mode: 'open' }).innerHTML = '<slot></slot>';
 		this.shadowRoot.firstElementChild.addEventListener('slotchange', event => {
@@ -27,12 +27,6 @@ class DataTierList extends HTMLElement {
 	connectedCallback() {
 		this.style.display = 'none';
 		this.setAttribute('data-tier-blackbox', '1');
-		const t = DataTier.ties.create(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY], []);
-		t.observe(changes => this.processModelChanges(changes));
-	}
-
-	disconnectedCallback() {
-		DataTier.ties.remove(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY]);
 	}
 
 	get defaultTieTarget() {
@@ -45,12 +39,13 @@ class DataTierList extends HTMLElement {
 			return;
 		}
 
-		const m = DataTier.ties.get(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY]);
-		m.splice(0, m.length, ...items);
+		const model = DataTier.ties.get(this);
+		model.splice(0, model.length, ...items);
+		this.fullUpdate();
 	}
 
 	get items() {
-		return DataTier.ties.get(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY]);
+		return DataTier.ties.get(this);
 	}
 
 	fullUpdate() {
@@ -61,7 +56,8 @@ class DataTierList extends HTMLElement {
 		const
 			targetContainer = this.resolveTargetContainer(),
 			inParentAdjust = targetContainer.contains(this) ? 1 : 0,
-			desiredListLength = DataTier.ties.get(LISTS_MODEL_TIE_NAME + this[SEQUENCE_ID_KEY]).length;
+			items = this.items,
+			desiredListLength = items.length;
 		let currentListLength = targetContainer.childElementCount - inParentAdjust,
 			lastElementChild;
 
@@ -74,9 +70,8 @@ class DataTierList extends HTMLElement {
 		}
 
 		let appendContent = '';
-		const replaceAll = new RegExp(INDEX_PLACEHOLDER, 'g');
 		while (currentListLength < desiredListLength) {
-			appendContent += this[PREPARED_TEMPLATE_KEY].replace(replaceAll, currentListLength);
+			appendContent += this[PREPARED_TEMPLATE_KEY];
 			currentListLength++;
 		}
 		if (appendContent) {
@@ -84,22 +79,21 @@ class DataTierList extends HTMLElement {
 			t.innerHTML = appendContent;
 			targetContainer.appendChild(t.content);
 		}
-	}
 
-	processModelChanges(changes) {
-		if (changes.some(c => c.type === 'shuffle')) {
-			this.fullUpdate();
-		} else {
-			const newItemTmp = document.createElement('template');
-			const replaceAll = new RegExp(INDEX_PLACEHOLDER, 'g');
-			changes.forEach(change => {
-				if (change.type === 'insert') {
-					let tmp = this[PREPARED_TEMPLATE_KEY].replace(replaceAll, currentListLength);
-				} else if (change.type === 'delete') {
+		Array.from(targetContainer.children).forEach((c, i) => {
+			if (inParentAdjust && i === 0) {
+				return;
+			}
 
+			const m = DataTier.ties.get(c);
+			if (m) {
+				if (m.price !== items[i - inParentAdjust].price) {
+					Object.assign(m, items[i - inParentAdjust]);
 				}
-			});
-		}
+			} else {
+				DataTier.ties.create(c, items[i - inParentAdjust]);
+			}
+		});
 	}
 
 	resolveTargetContainer() {
@@ -112,25 +106,8 @@ class DataTierList extends HTMLElement {
 	}
 
 	preprocessTemplate(template) {
-		const replacer = `${LISTS_MODEL_TIE_NAME}${this[SEQUENCE_ID_KEY]}:${INDEX_PLACEHOLDER}`;
-		const detached = template.cloneNode(true);
-		const els = [detached];
-		if (detached.childElementCount) {
-			Array.prototype.push.apply(els, detached.querySelectorAll('*'));
-		}
-		let i = els.length, next, attr;
-		while (i) {
-			next = els[--i];
-			attr = next.getAttribute('data-tie');
-			if (attr) {
-				next.setAttribute('data-tie', attr
-					.replace(/item:/g, `${replacer}.`)
-					.replace(/item\s*=/g, `${replacer}=`)
-					.replace(/item(?![.a-zA-Z0-9])/g, `${replacer}`)
-				);
-			}
-		}
-		this[PREPARED_TEMPLATE_KEY] = detached.outerHTML;
+		template.setAttribute('data-tie-scope', '1');
+		this[PREPARED_TEMPLATE_KEY] = template.outerHTML;
 	}
 }
 

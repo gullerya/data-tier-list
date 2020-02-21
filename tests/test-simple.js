@@ -21,7 +21,7 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 	r.dataset.tie = tn;
 	r.setAttribute('data-list-target', `.${tn}`);
 	r.innerHTML = `
-		<option data-tie="item:text => textContent, item:value => value"></option>
+		<option data-tie="scope:text => textContent, scope:value => value"></option>
 	`;
 
 	//	initial insert
@@ -95,12 +95,14 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 suite.runTest({ name: 'validate binding item as a whole' }, async test => {
 	const tn = test.getRandom(8);
 	DataTier.ties.create(tn, [
-		'A', 'B', 'C'
+		{ text: 'A' },
+		{ text: 'B' },
+		{ text: 'C' }
 	]);
 	const e = document.createElement('div');
 	e.innerHTML = `
 		<data-tier-list data-tie="${tn} => items">
-			<span class="whole-item-bind" data-tie="item"></span>
+			<span data-tie="scope:text"></span>
 		</data-tier-list>
 	`;
 
