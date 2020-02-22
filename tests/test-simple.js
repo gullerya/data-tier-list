@@ -109,9 +109,9 @@ suite.runTest({ name: 'validate binding item as a whole' }, async test => {
 	//	initial insert
 	document.body.appendChild(e);
 	await new Promise(res => setTimeout(res, 0));
-	let children = e.querySelectorAll('.whole-item-bind');
-	if (children.length !== 3) test.fail('expected to have 3 options, found ' + children.length);
-	if (children[0].textContent !== 'A' || children[0].value !== 'A') test.fail('option 0 is not as expected');
-	if (children[1].textContent !== 'B' || children[1].value !== 'B') test.fail('option 1 is not as expected');
-	if (children[2].textContent !== 'C' || children[2].value !== 'C') test.fail('option 2 is not as expected');
+	let children = Array.from(e.children).filter(c => c.nodeName === 'SPAN');
+	if (children.length !== 3) test.fail('expected to have 3 spans, found ' + children.length);
+	if (children[0].textContent !== 'A') test.fail('span 0 is not as expected');
+	if (children[1].textContent !== 'B') test.fail('span 1 is not as expected');
+	if (children[2].textContent !== 'C') test.fail('span 2 is not as expected');
 });

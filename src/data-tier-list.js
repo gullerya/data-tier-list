@@ -53,6 +53,8 @@ class DataTierList extends HTMLElement {
 			return;
 		}
 
+		console.log('some');
+
 		const
 			targetContainer = this.resolveTargetContainer(),
 			inParentAdjust = targetContainer.contains(this) ? 1 : 0,
@@ -87,9 +89,7 @@ class DataTierList extends HTMLElement {
 
 			const m = DataTier.ties.get(c);
 			if (m) {
-				if (m.price !== items[i - inParentAdjust].price) {
-					Object.assign(m, items[i - inParentAdjust]);
-				}
+				Object.assign(m, items[i - inParentAdjust]);
 			} else {
 				DataTier.ties.create(c, items[i - inParentAdjust]);
 			}
