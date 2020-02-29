@@ -53,28 +53,27 @@ class DataTierList extends HTMLElement {
 			return;
 		}
 
-		console.log('some');
-
 		const
 			targetContainer = this.resolveTargetContainer(),
 			inParentAdjust = targetContainer.contains(this) ? 1 : 0,
 			items = this.items,
+			currentListLength = targetContainer.childElementCount - inParentAdjust,
 			desiredListLength = items.length;
-		let currentListLength = targetContainer.childElementCount - inParentAdjust,
+		let llc = currentListLength,
 			lastElementChild;
 
-		while (currentListLength > desiredListLength) {
+		while (llc > desiredListLength) {
 			lastElementChild = targetContainer.lastElementChild;
 			if (lastElementChild !== this) {
 				targetContainer.removeChild(lastElementChild);
 			}
-			currentListLength--;
+			llc--;
 		}
 
 		let appendContent = '';
-		while (currentListLength < desiredListLength) {
+		while (llc < desiredListLength) {
 			appendContent += this[PREPARED_TEMPLATE_KEY];
-			currentListLength++;
+			llc++;
 		}
 		if (appendContent) {
 			const t = document.createElement('template');
@@ -83,7 +82,7 @@ class DataTierList extends HTMLElement {
 		}
 
 		Array.from(targetContainer.children).forEach((c, i) => {
-			if (inParentAdjust && i === 0) {
+			if (i - inParentAdjust < currentListLength) {
 				return;
 			}
 

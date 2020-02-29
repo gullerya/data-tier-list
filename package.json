@@ -45,7 +45,7 @@
     "test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json"
   },
   "peerDependencies": {
-    "data-tier": "^2.7.5"
+    "data-tier": "^2.8.1"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
@@ -57,6 +57,6 @@
     "fs-extra": "^8.1.0",
     "uglify-es": "^3.3.9",
     "just-test": "^2.3.0",
-    "data-tier": "^2.7.5"
+    "data-tier": "^2.8.1"
   }
 }
