@@ -2,6 +2,8 @@ import * as DataTier from './data-tier/data-tier.min.js';
 
 const
 	SEQUENCE_ID_KEY = Symbol('sequence.id'),
+	BOUND_UPDATER_KEY = Symbol('bound.updater'),
+	ITEMS_KEY = Symbol('items.key'),
 	PREPARED_TEMPLATE_KEY = Symbol('prepared.template');
 
 let sequencer = 1;
@@ -9,9 +11,8 @@ let sequencer = 1;
 class DataTierList extends HTMLElement {
 	constructor() {
 		super();
-		const model = DataTier.ties.create(this, []);
-		model.observe(() => this.fullUpdate());
 		this[SEQUENCE_ID_KEY] = sequencer++;
+		this[BOUND_UPDATER_KEY] = this.fullUpdate.bind(this);
 		this.attachShadow({ mode: 'open' }).innerHTML = '<slot></slot>';
 		this.shadowRoot.firstElementChild.addEventListener('slotchange', event => {
 			const templateNodes = event.target.assignedNodes().filter(n => n.nodeType === Node.ELEMENT_NODE);
@@ -39,13 +40,29 @@ class DataTierList extends HTMLElement {
 			return;
 		}
 
-		const model = DataTier.ties.get(this);
-		model.splice(0, model.length, ...items);
+		//	remove old model (should be conditional?)
+		if (this[ITEMS_KEY]) {
+			this[ITEMS_KEY].unobserve(this[BOUND_UPDATER_KEY]);
+			if (DataTier.ties.get(this)) {
+				DataTier.ties.remove(this);
+			}
+		}
+
+		//	create new model
+		let im;
+		if (typeof items.observe === 'function' && typeof items.unobserve === 'function') {
+			im = items;
+		} else {
+			im = DataTier.ties.create(this, items);
+		}
+
+		im.observe(this[BOUND_UPDATER_KEY]);
+		this[ITEMS_KEY] = im;
 		this.fullUpdate();
 	}
 
 	get items() {
-		return DataTier.ties.get(this);
+		return this[ITEMS_KEY];
 	}
 
 	fullUpdate() {
@@ -87,10 +104,10 @@ class DataTierList extends HTMLElement {
 			}
 
 			const m = DataTier.ties.get(c);
-			if (m) {
-				Object.assign(m, items[i - inParentAdjust]);
-			} else {
+			if (!m) {
 				DataTier.ties.create(c, items[i - inParentAdjust]);
+			} else if (m !== items[i - inParentAdjust]) {
+				DataTier.ties.update(c, items[i - inParentAdjust]);
 			}
 		});
 	}
@@ -105,7 +122,6 @@ class DataTierList extends HTMLElement {
 	}
 
 	preprocessTemplate(template) {
-		template.setAttribute('data-tie-scope', '1');
 		this[PREPARED_TEMPLATE_KEY] = template.outerHTML;
 	}
 }
