@@ -1,5 +1,5 @@
 import { getSuite, RANDOM_CHARSETS } from '../node_modules/just-test/dist/just-test.js';
-import * as DataTier from '../dist/data-tier/data-tier.js';
+import * as DataTier from '../dist/data-tier/data-tier.min.js';
 import '../dist/data-tier-list.js';
 
 const suite = getSuite({ name: 'Simple cases - select' });
