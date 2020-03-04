@@ -27,7 +27,6 @@ class DataTierList extends HTMLElement {
 
 	connectedCallback() {
 		this.style.display = 'none';
-		this.setAttribute('data-tier-blackbox', '1');
 	}
 
 	get defaultTieTarget() {
@@ -66,7 +65,7 @@ class DataTierList extends HTMLElement {
 	}
 
 	fullUpdate() {
-		if (!this[PREPARED_TEMPLATE_KEY]) {
+		if (!this[PREPARED_TEMPLATE_KEY] || !this[ITEMS_KEY]) {
 			return;
 		}
 
@@ -98,18 +97,15 @@ class DataTierList extends HTMLElement {
 			targetContainer.appendChild(t.content);
 		}
 
-		Array.from(targetContainer.children).forEach((c, i) => {
-			if (i - inParentAdjust < currentListLength) {
-				return;
-			}
-
+		for (let i = inParentAdjust, l = targetContainer.children.length; i < l; i++) {
+			const c = targetContainer.children[i];
 			const m = DataTier.ties.get(c);
 			if (!m) {
 				DataTier.ties.create(c, items[i - inParentAdjust]);
 			} else if (m !== items[i - inParentAdjust]) {
 				DataTier.ties.update(c, items[i - inParentAdjust]);
 			}
-		});
+		}
 	}
 
 	resolveTargetContainer() {
