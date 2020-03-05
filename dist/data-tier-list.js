@@ -66,7 +66,7 @@ class DataTierList extends HTMLElement {
 
 	fullUpdate(changes) {
 		if (!this[PREPARED_TEMPLATE_KEY] || !this[ITEMS_KEY]) {
-			return;		//	return on pre-ready
+			return;
 		}
 
 		const
