@@ -1,4 +1,4 @@
-import * as DataTier from './data-tier/data-tier.js';
+import * as DataTier from './data-tier/data-tier.min.js';
 
 const
 	SEQUENCE_ID_KEY = Symbol('sequence.id'),
