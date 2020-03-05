@@ -4,9 +4,9 @@ import '../dist/data-tier-list.js';
 const suite = getSuite({ name: 'Complex cases - nested' });
 const htmlTemplate = `
 	<data-tier-list>
-		<div>
-			<data-tier-list data-tie="scope => scope">
-				<span data-tie="scope"></span>
+		<div data-tie="scope => scope">
+			<data-tier-list data-tie="scope => items">
+				<span data-tie="scope:text"></span>
 			</data-tier-list>
 		</div>
 	</data-tier-list>
@@ -19,6 +19,9 @@ suite.runTest({ name: 'complex grid content - set items' }, async test => {
 	document.body.appendChild(e);
 
 	e.firstElementChild.items = createGridData(10, 10);
+
+	await test.waitNextMicrotask();
+	//	TODO: validate
 });
 
 function createGridData(n, m) {
@@ -26,7 +29,7 @@ function createGridData(n, m) {
 	for (let i = 1; i <= n; i++) {
 		const nextRow = [];
 		for (let j = 1; j <= m; j++) {
-			nextRow.push(j);
+			nextRow.push({ text: j });
 		}
 		items.push(nextRow);
 	}

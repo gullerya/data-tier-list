@@ -26,7 +26,7 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 
 	//	initial insert
 	document.body.appendChild(r);
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	children = e.querySelectorAll('option');
 	if (children.length !== 3) test.fail('expected to have 3 options, found ' + children.length);
 	if (children[0].textContent !== 'TEXT 1' || children[0].value !== '1') test.fail('[initial] option 0 is not as expected');
@@ -35,7 +35,7 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 
 	//	PUSH
 	t.push({ text: 'TEXT 4', value: 4 });
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	children = e.querySelectorAll('option');
 	if (children.length !== 4) test.fail('expected to have 4 options, found ' + children.length);
 	if (children[0].textContent !== 'TEXT 1' || children[0].value !== '1') test.fail('[push] option 0 is not as expected');
@@ -45,7 +45,7 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 
 	//	UNSHIFT
 	t.unshift({ text: 'TEXT 0', value: 0 });
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	children = e.querySelectorAll('option');
 	if (children.length !== 5) test.fail('expected to have 5 options, found ' + children.length);
 	if (children[0].textContent !== 'TEXT 0' || children[0].value !== '0') test.fail('[unshift] option 0 is not as expected');
@@ -64,8 +64,7 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 	//	SHIFT
 	t.shift();
 	t[0].text = 'TEXT NEW FIRST';
-	await new Promise(res => setTimeout(res, 0));
-
+	await test.waitNextMicrotask();
 	children = e.querySelectorAll('option');
 	if (children.length !== 4) test.fail('expected to have 4 options, found ' + children.length);
 	if (children[0].textContent !== 'TEXT NEW FIRST' || children[0].value !== '1') test.fail('[shift] option 0 is not as expected');
@@ -75,7 +74,7 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 
 	//	POP
 	t.pop();
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	children = e.querySelectorAll('option');
 	if (children.length !== 3) test.fail('expected to have 3 options, found ' + children.length);
 	if (children[0].textContent !== 'TEXT NEW FIRST' || children[0].value !== '1') test.fail('[pop] option 0 is not as expected');
@@ -84,12 +83,17 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 
 	//	REVERSE
 	t.reverse();
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	children = e.querySelectorAll('option');
 	if (children.length !== 3) test.fail('expected to have 3 options, found ' + children.length);
-	if (children[0].textContent !== 'TEXT 3' || children[0].value !== '3') test.fail('[reverse] option 0 is not as expected');
-	if (children[1].textContent !== 'TEXT 2' || children[1].value !== '2') test.fail('[reverse] option 1 is not as expected');
-	if (children[2].textContent !== 'TEXT NEW FIRST' || children[2].value !== '1') test.fail('[reverse] option 2 is not as expected');
+	if (children[0].textContent !== t[0].text || children[0].value !== '3') test.fail('[reverse] option 0 is not as expected');
+	if (children[1].textContent !== t[1].text || children[1].value !== '2') test.fail('[reverse] option 1 is not as expected');
+	if (children[2].textContent !== t[2].text || children[2].value !== '1') test.fail('[reverse] option 2 is not as expected');
+
+	//	all still works well after the reverse
+	t[2].text = 'THIS IS THE LAST ONE';
+	children = e.querySelectorAll('option');
+	if (children[2].textContent !== 'THIS IS THE LAST ONE') test.fail('change option 2 [after reverse] is not as expected');
 });
 
 suite.runTest({ name: 'validate binding item as a whole' }, async test => {
