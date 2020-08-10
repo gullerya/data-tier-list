@@ -4,9 +4,20 @@
 [![Codecov](https://img.shields.io/codecov/c/github/gullerya/data-tier-list/master.svg)](https://codecov.io/gh/gullerya/data-tier-list/branch/master)
 [![Codacy](https://img.shields.io/codacy/grade/056de1a3a7c740678d517a0ee0b41b4f.svg?logo=codacy)](https://app.codacy.com/app/gullerya/data-tier-list)
 
-## Overview
+# Overview
 
-`data-tier-list` is a WebComponent based on a [DataTier library](https://github.com/gullerya/data-tier) and providing visualization of a repeated contents.
+`data-tier-list` is a WebComponent, that provides repetative view functionality - given a UI template for a single item and a tied data set, it'll reflect that set in UI continuously, including any further changes to the data set. 
 
-Note: the work is in progress and this is only an initial version for dev-purposes.
-General availability note will be updated here.
+`data-tier-list` based on a [data-tier](https://github.com/gullerya/data-tier) library for the model-view tying part.
+
+# APIs and condition
+
+* `data-tier-list` element self and it's inner DOM are **not** displayed
+
+* inner DOM of the `data-tier-list` is taken as a **template** for a single item:
+
+* inner DOM of the `data-tier-list` **must** have one and only one top level element
+
+# Latest changelog
+
+TBD

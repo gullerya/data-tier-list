@@ -13,20 +13,22 @@ class DataTierList extends HTMLElement {
 		super();
 		this[SEQUENCE_ID_KEY] = sequencer++;
 		this[BOUND_UPDATER_KEY] = this.fullUpdate.bind(this);
-		this.attachShadow({ mode: 'open' }).innerHTML = '<slot></slot>';
+		this.attachShadow({ mode: 'open' }).innerHTML = `
+			<style>
+				:host {
+					display: none;
+				}
+			</style>
+			<slot></slot>
+		`;
 		this.shadowRoot.firstElementChild.addEventListener('slotchange', event => {
 			const templateNodes = event.target.assignedNodes().filter(n => n.nodeType === Node.ELEMENT_NODE);
 			if (templateNodes.length !== 1) {
-				console.error(`list item template MUST have onle 1 root element, got ${templateNodes.length}`);
-				return;
+				throw new Error(`list item template MUST have 1 root element only, got ${templateNodes.length}`);
 			}
 			this.preprocessTemplate(templateNodes[0]);
 			this.fullUpdate();
 		});
-	}
-
-	connectedCallback() {
-		this.style.display = 'none';
 	}
 
 	get defaultTieTarget() {
@@ -131,7 +133,7 @@ class DataTierList extends HTMLElement {
 	}
 
 	resolveTargetContainer() {
-		let result = this.parentElement;
+		let result = this.parentNode;
 		const attr = this.getAttribute('data-list-target');
 		if (attr) {
 			result = this.getRootNode().querySelector(attr);
