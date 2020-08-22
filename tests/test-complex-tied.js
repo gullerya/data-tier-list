@@ -41,6 +41,7 @@ suite.runTest({ name: 'complex grid content - set items' }, async test => {
 
 	e.firstElementChild.dataset.tie = `${tn}`
 	await test.waitNextMicrotask();
+	test.assertEqual(21, e.childElementCount);
 	test.assertEqual('Name 1', e.children[1].children[0].textContent);
 	test.assertEqual('Description 11', e.children[11].children[1].value);
 	test.assertEqual(12 % 3 === 0, e.children[12].children[2].checked);

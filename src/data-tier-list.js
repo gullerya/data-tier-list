@@ -1,27 +1,20 @@
 import * as DataTier from './data-tier/data-tier.min.js';
 
 const
-	SEQUENCE_ID_KEY = Symbol('sequence.id'),
+	SELF_TEMPLATE = `
+		<style>:host {display: none;}</style>
+		<slot></slot>
+	`,
 	BOUND_UPDATER_KEY = Symbol('bound.updater'),
 	ITEMS_KEY = Symbol('items.key'),
 	PREPARED_TEMPLATE_KEY = Symbol('prepared.template');
 
-let sequencer = 1;
-
 class DataTierList extends HTMLElement {
 	constructor() {
 		super();
-		this[SEQUENCE_ID_KEY] = sequencer++;
 		this[BOUND_UPDATER_KEY] = this.fullUpdate.bind(this);
-		this.attachShadow({ mode: 'open' }).innerHTML = `
-			<style>
-				:host {
-					display: none;
-				}
-			</style>
-			<slot></slot>
-		`;
-		this.shadowRoot.firstElementChild.addEventListener('slotchange', event => {
+		this.attachShadow({ mode: 'open' }).innerHTML = SELF_TEMPLATE;
+		this.shadowRoot.querySelector('slot').addEventListener('slotchange', event => {
 			const templateNodes = event.target.assignedNodes().filter(n => n.nodeType === Node.ELEMENT_NODE);
 			if (templateNodes.length !== 1) {
 				throw new Error(`list item template MUST have 1 root element only, got ${templateNodes.length}`);
@@ -36,8 +29,14 @@ class DataTierList extends HTMLElement {
 	}
 
 	set items(items) {
+		//	not an Array - exit early
 		if (!Array.isArray(items)) {
 			console.error(`array of items expected, but got '${items}'`);
+			return;
+		}
+
+		//	same value set - exit early
+		if (this[ITEMS_KEY] === items) {
 			return;
 		}
 
@@ -133,10 +132,15 @@ class DataTierList extends HTMLElement {
 	}
 
 	resolveTargetContainer() {
-		let result = this.parentNode;
+		let result;
 		const attr = this.getAttribute('data-list-target');
 		if (attr) {
 			result = this.getRootNode().querySelector(attr);
+			if (!result) {
+				throw new Error(`failed to resolve target container by the given query '${attr}'`);
+			}
+		} else {
+			result = this.parentNode;
 		}
 		return result;
 	}

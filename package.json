@@ -41,15 +41,15 @@
 		"url": "https://github.com/gullerya/data-tier-list"
 	},
 	"scripts": {
-		"build": "node ./build/tools/build-dist.js",
-		"lint": "eslint -c ./build/.eslintrc.json --ignore-path ./build/.eslintignore ./src/**/*.js",
+		"build": "node ./ci/tools/build-dist.js",
+		"lint": "eslint -c ./ci/.eslintrc.json --ignore-path ./ci/.eslintignore ./src/**/*.js --quiet",
 		"test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json"
 	},
 	"dependencies": {
 		"data-tier": "^2.9.4"
 	},
 	"devDependencies": {
-		"eslint": "^7.6.0",
+		"eslint": "^7.7.0",
 		"eslint-config-standard": "^14.1.1",
 		"eslint-plugin-standard": "^4.0.1",
 		"eslint-plugin-promise": "^4.2.1",

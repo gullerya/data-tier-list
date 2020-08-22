@@ -6,17 +6,23 @@
 
 # Overview
 
-`data-tier-list` is a WebComponent, that provides repetative view functionality - given a UI template for a single item and a tied data set, it'll reflect that set in UI continuously, including any further changes to the data set. 
+`data-tier-list` is a WebComponent, that provides repetative view functionality - given a UI template for a single item and a tied data set, it'll reflect that set in UI continuously, including any further changes to the data set.
+
+`data-tier-list` supports the following data structures:
+* `Array`
+* `Object`
+
+Uniformity of a data items **is not** validated/enforced, implying it being a consumer's concern.
 
 `data-tier-list` based on a [data-tier](https://github.com/gullerya/data-tier) library for the model-view tying part.
 
-# APIs and condition
+# APIs and conditions
 
-* `data-tier-list` element self and it's inner DOM are **not** displayed
+* `data-tier-list` element self and it's light DOM are **not** displayed
 
-* inner DOM of the `data-tier-list` is taken as a **template** for a single item:
+* light DOM of the `data-tier-list` is taken as a **template** for a single item:
 
-* inner DOM of the `data-tier-list` **must** have one and only one top level element
+* light DOM of the `data-tier-list` may at most have one top level element (any nested elements tree allowed)
 
 # Latest changelog
 
