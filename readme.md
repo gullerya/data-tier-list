@@ -20,9 +20,11 @@ Uniformity of a data items **is not** validated/enforced, implying it being a co
 
 * `data-tier-list` element self and it's light DOM are **not** displayed
 
-* light DOM of the `data-tier-list` is taken as a **template** for a single item:
-
-* light DOM of the `data-tier-list` may at most have one top level element (any nested elements tree allowed)
+* light DOM of the `data-tier-list` is taken as an **item-template** for a single item
+	* item-template is observed for any changes; replacement of it or a change of its child/ren triggers a **full (re)render** of the list
+	* item-template may have **at most** one top level element (any nested elements tree allowed)
+	* item-template removal cleans the list
+	* item-template error (eg more than one child) throws, list remains untouched
 
 # Latest changelog
 

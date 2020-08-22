@@ -58,7 +58,11 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 	t[0].text = 'TEXT FIRST';
 	t[4].text = 'TEXT LAST';
 	children = e.querySelectorAll('option');
+	if (children.length !== 5) test.fail('expected to have 5 options, found ' + children.length);
 	if (children[0].textContent !== 'TEXT FIRST') test.fail('[modify] option 0 is not as expected');
+	if (children[1].textContent !== 'TEXT 1' || children[1].value !== '1') test.fail('[modify] option 1 is not as expected');
+	if (children[2].textContent !== 'TEXT 2' || children[2].value !== '2') test.fail('[modify] option 2 is not as expected');
+	if (children[3].textContent !== 'TEXT 3' || children[3].value !== '3') test.fail('[modify] option 3 is not as expected');
 	if (children[4].textContent !== 'TEXT LAST') test.fail('[modify] option 4 is not as expected');
 
 	//	SHIFT
