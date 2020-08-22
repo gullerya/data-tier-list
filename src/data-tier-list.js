@@ -16,8 +16,9 @@ class DataTierList extends HTMLElement {
 		this.attachShadow({ mode: 'open' }).innerHTML = SELF_TEMPLATE;
 		this.shadowRoot.querySelector('slot').addEventListener('slotchange', event => {
 			const templateNodes = event.target.assignedNodes().filter(n => n.nodeType === Node.ELEMENT_NODE);
-			if (templateNodes.length !== 1) {
-				throw new Error(`list item template MUST have 1 root element only, got ${templateNodes.length}`);
+			if (!templateNodes.length) {
+			} else if (templateNodes.length !== 1) {
+				throw new Error(`list item template MAY have 1 root element only, got ${templateNodes.length}`);
 			}
 			this.preprocessTemplate(templateNodes[0]);
 			this.fullUpdate();
