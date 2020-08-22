@@ -91,8 +91,13 @@ class DataTierList extends HTMLElement {
 	}
 
 	[OBSERVER_KEY](changes) {
-		//	TODO: optimise based on the number of events and their type
-		this[FULL_UPDATER_KEY]();
+		for (const change of changes) {
+			if (change.type === 'shuffle') {
+				this[FULL_UPDATER_KEY]();
+			} else {
+				this[PART_UPDATER_KEY](change);
+			}
+		}
 	}
 
 	[FULL_UPDATER_KEY]() {
@@ -137,7 +142,7 @@ class DataTierList extends HTMLElement {
 		}
 	}
 
-	[PART_UPDATER_KEY](changes) {
+	[PART_UPDATER_KEY](change) {
 		if (!this[TEMPLATE_KEY] || !this[ITEMS_KEY]) {
 			return;
 		}
@@ -147,23 +152,24 @@ class DataTierList extends HTMLElement {
 			inParentAdjust = targetContainer.contains(this) ? 1 : 0;
 
 		const t = document.createElement('template');
-		changes.forEach(c => {
-			if (c.path.length > 1) {
-				return;
+		if (change.path.length > 1) {
+			return;
+		}
+		if (change.type === 'insert') {
+			t.innerHTML = this[TEMPLATE_KEY];
+			ties.create(t.content.firstElementChild, change.value);
+			targetContainer.insertBefore(t.content, targetContainer.children[change.path[0] + inParentAdjust]);
+		} else if (change.type === 'update') {
+			//	TODO
+		} else if (change.type === 'delete') {
+			targetContainer.removeChild(targetContainer.children[change.path[0] + inParentAdjust]);
+		} else if (change.type === 'reverse') {
+			for (var i = inParentAdjust + 1, l = targetContainer.children.length - inParentAdjust / 2; i < l; i++) {
+				targetContainer.insertBefore(targetContainer.children[i], targetContainer.children[i - 1]);
 			}
-			if (c.type === 'insert') {
-				t.innerHTML = this[TEMPLATE_KEY];
-				targetContainer.insertBefore(t.content, targetContainer.children[c.path[0] + inParentAdjust]);
-			} else if (c.type === 'delete') {
-				targetContainer.removeChild(targetContainer.children[c.path[0] + inParentAdjust]);
-			} else if (c.type === 'reverse') {
-				for (var i = inParentAdjust + 1, l = targetContainer.children.length - inParentAdjust / 2; i < l; i++) {
-					targetContainer.insertBefore(targetContainer.children[i], targetContainer.children[i - 1]);
-				}
-			} else {
-				console.warn(`unsupported change type ${c.type}`);
-			}
-		});
+		} else {
+			console.warn(`unsupported change type ${change.type}`);
+		}
 	}
 }
 
