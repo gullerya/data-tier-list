@@ -21,7 +21,16 @@ suite.runTest({ name: 'complex grid content - set items' }, async test => {
 	e.firstElementChild.items = createGridData(10, 10);
 
 	await test.waitNextMicrotask();
-	//	TODO: validate
+
+	test.assertEqual(11, e.childElementCount);
+	for (let i = 1; i < e.childElementCount; i++) {
+		const flChild = e.children[i];
+		test.assertEqual(11, flChild.childElementCount);
+		for (let j = 1; j < flChild.length; j++) {
+			const slChild = flChild.children[j];
+			test.assertEqual(j, slChild.textContent);
+		}
+	}
 });
 
 function createGridData(n, m) {

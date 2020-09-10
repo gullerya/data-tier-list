@@ -92,7 +92,7 @@ class DataTierList extends HTMLElement {
 
 	[OBSERVER_KEY](changes) {
 		for (const change of changes) {
-			if (change.type === 'shuffle') {
+			if (change.type === 'shuffle' || change.type === 'reverse') {
 				this[FULL_UPDATER_KEY]();
 			} else {
 				this[PART_UPDATER_KEY](change);

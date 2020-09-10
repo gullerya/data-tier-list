@@ -86,18 +86,18 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 	if (children[2].textContent !== 'TEXT 3' || children[2].value !== '3') test.fail('[pop] option 2 is not as expected');
 
 	//	REVERSE
-	// t.reverse();
-	// await test.waitNextMicrotask();
-	// children = e.querySelectorAll('option');
-	// if (children.length !== 3) test.fail('expected to have 3 options, found ' + children.length);
-	// if (children[0].textContent !== t[0].text || children[0].value !== '3') test.fail('[reverse] option 0 is not as expected');
-	// if (children[1].textContent !== t[1].text || children[1].value !== '2') test.fail('[reverse] option 1 is not as expected');
-	// if (children[2].textContent !== t[2].text || children[2].value !== '1') test.fail('[reverse] option 2 is not as expected');
+	t.reverse();
+	await test.waitNextMicrotask();
+	children = e.querySelectorAll('option');
+	if (children.length !== 3) test.fail('expected to have 3 options, found ' + children.length);
+	if (children[0].textContent !== t[0].text || children[0].value !== '3') test.fail('[reverse] option 0 is not as expected');
+	if (children[1].textContent !== t[1].text || children[1].value !== '2') test.fail('[reverse] option 1 is not as expected');
+	if (children[2].textContent !== t[2].text || children[2].value !== '1') test.fail('[reverse] option 2 is not as expected');
 
-	// //	all still works well after the reverse
-	// t[2].text = 'THIS IS THE LAST ONE';
-	// children = e.querySelectorAll('option');
-	// if (children[2].textContent !== 'THIS IS THE LAST ONE') test.fail('change option 2 [after reverse] is not as expected');
+	//	all still works well after the reverse
+	t[2].text = 'THIS IS THE LAST ONE';
+	children = e.querySelectorAll('option');
+	if (children[2].textContent !== 'THIS IS THE LAST ONE') test.fail('change option 2 [after reverse] is not as expected');
 });
 
 suite.runTest({ name: 'validate binding item as a whole' }, async test => {
