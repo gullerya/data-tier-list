@@ -1,7 +1,10 @@
 name: Quality pipeline
+
 on:
   push:
     branches: ["*"]
+  schedule:
+    - cron: "0 */2 * * *"
 
 jobs:
   quality_pipeline:
