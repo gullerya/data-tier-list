@@ -20,12 +20,12 @@ const htmlTemplate = `
 `;
 
 class Product {
-	constructor(name, description, location, available, amount) {
-		this.name = name;
-		this.description = description;
-		this.available = available;
-		this.amount = amount;
-		this.location = location;
+	constructor(pName, pDescription, pLocation, pAvailable, pAmount) {
+		this.name = pName;
+		this.description = pDescription;
+		this.available = pAvailable;
+		this.amount = pAmount;
+		this.location = pLocation;
 	}
 }
 
