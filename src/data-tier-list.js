@@ -4,7 +4,7 @@ const
 	DATA_TIER_LIST = 'data-tier-list',
 	SELF_TEMPLATE = `
 		<style>:host {display: none;}</style>
-		<slot></slot>
+		<slot id="template-slot"></slot>
 	`,
 	ITEMS_KEY = Symbol('items.key'),
 	TEMPLATE_KEY = Symbol('template'),
@@ -22,7 +22,7 @@ class DataTierList extends HTMLElement {
 		this[TEMPLATE_KEY] = null;
 		this[OBSERVER_KEY] = this[OBSERVER_KEY].bind(this);
 		this.attachShadow({ mode: 'open' }).innerHTML = SELF_TEMPLATE;
-		this.shadowRoot.querySelector('slot').addEventListener('slotchange', () => this[TEMPLATE_PROCESSOR_KEY]());
+		this.shadowRoot.querySelector('#template-slot').addEventListener('slotchange', () => this[TEMPLATE_PROCESSOR_KEY]());
 	}
 
 	get defaultTieTarget() {
@@ -30,16 +30,16 @@ class DataTierList extends HTMLElement {
 	}
 
 	set items(items) {
+		//	same value set - exit eagerly
+		if (this[ITEMS_KEY] === items) {
+			return;
+		}
+
 		//	not an Array - exit eagerly
 		if (!Array.isArray(items)) {
 			if (this[ITEMS_KEY] && this[ITEMS_KEY].length) {
 				console.warn(`array of items expected (empty array or null allowed), but got '${items}'; nor further action taken`);
 			}
-			return;
-		}
-
-		//	same value set - exit eagerly
-		if (this[ITEMS_KEY] === items) {
 			return;
 		}
 
