@@ -1,11 +1,9 @@
 import { ties } from './data-tier/data-tier.min.js';
+import { Observable } from './data-tier/object-observer.min.js';
 
 const
 	DATA_TIER_LIST = 'data-tier-list',
-	SELF_TEMPLATE = `
-		<style>:host {display: none;}</style>
-		<slot id="template-slot"></slot>
-	`,
+	SELF_TEMPLATE = `<slot id="template"></slot>`,
 	ITEMS_KEY = Symbol('items.key'),
 	TEMPLATE_KEY = Symbol('template'),
 
@@ -22,7 +20,12 @@ class DataTierList extends HTMLElement {
 		this[TEMPLATE_KEY] = null;
 		this[OBSERVER_KEY] = this[OBSERVER_KEY].bind(this);
 		this.attachShadow({ mode: 'open' }).innerHTML = SELF_TEMPLATE;
-		this.shadowRoot.querySelector('#template-slot').addEventListener('slotchange', () => this[TEMPLATE_PROCESSOR_KEY]());
+		this.shadowRoot.querySelector('#template').addEventListener('slotchange', () => this[TEMPLATE_PROCESSOR_KEY]());
+	}
+
+	connectedCallback() {
+		this.setAttribute('hidden', '');
+		this[TEMPLATE_PROCESSOR_KEY]();
 	}
 
 	get defaultTieTarget() {
@@ -46,15 +49,11 @@ class DataTierList extends HTMLElement {
 		//	remove old model
 		if (this[ITEMS_KEY]) {
 			this[ITEMS_KEY].unobserve(this[OBSERVER_KEY]);
-			if (ties.get(this)) {
-				ties.remove(this);
-			}
 		}
 
 		//	create/update model
-		const im = ties.update(this, items);
-		im.observe(this[OBSERVER_KEY], { pathsOf: '' });
-		this[ITEMS_KEY] = im;
+		this[ITEMS_KEY] = Observable.from(items);
+		this[ITEMS_KEY].observe(this[OBSERVER_KEY], { pathsOf: '' });
 		this[FULL_UPDATER_KEY]();
 	}
 
@@ -77,15 +76,28 @@ class DataTierList extends HTMLElement {
 	}
 
 	[TEMPLATE_PROCESSOR_KEY]() {
-		const templateNodes = this.shadowRoot.querySelector('slot').assignedNodes().filter(n => n.nodeType === Node.ELEMENT_NODE);
+		const templateNodes = this.children;
 		let newTemplate = null;
 		if (templateNodes.length === 1) {
 			newTemplate = templateNodes[0].outerHTML;
 		} else {
-			throw new Error(`list item template MAY have 1 root element only, got ${templateNodes.length}`);
+			console.error(`list item template MAY have 1 root element only, got ${templateNodes.length}`);
+			return;
 		}
 
+		if (templateNodes[0] === this.__currentTemplate) {
+			return;
+		}
+
+		//	scoping the template self to prevent shadowing
+		if (this.__currentTemplate) {
+			ties.remove(this.__currentTemplate);
+		}
+		ties.create(templateNodes[0]);
+		this.__currentTemplate = templateNodes[0];
+
 		//	TODO: any preprocessing/optimisations go here
+		//	TODO: set mutation observer to track inner changes as well
 		this[TEMPLATE_KEY] = newTemplate;
 		this[FULL_UPDATER_KEY]();
 	}
