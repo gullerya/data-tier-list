@@ -21,7 +21,7 @@ suite.runTest({ name: 'tied with a simple (non-scoped) tie' }, async test => {
 
 	test.assertEqual(4, e.childElementCount);
 	for (const [i, te] of Array.from(e.children).entries()) {
-		if (te.matches('[hidden]')) continue;
+		if (!i) continue;
 		test.assertEqual(m[i - 1].text, te.textContent);
 	}
 });

@@ -4,6 +4,7 @@ import { Observable } from './data-tier/object-observer.min.js';
 const
 	DATA_TIER_LIST = 'data-tier-list',
 	SELF_TEMPLATE = `<slot id="template"></slot>`,
+	ITEM_KEY = Symbol('item.key'),
 	ITEMS_KEY = Symbol('items.key'),
 	TEMPLATE_KEY = Symbol('template'),
 
@@ -20,6 +21,7 @@ class DataTierList extends HTMLElement {
 		this[TEMPLATE_KEY] = null;
 		this[OBSERVER_KEY] = this[OBSERVER_KEY].bind(this);
 		this.attachShadow({ mode: 'open' }).innerHTML = SELF_TEMPLATE;
+		//	TODO: replace the below one with MutationObserver
 		this.shadowRoot.querySelector('#template').addEventListener('slotchange', () => this[TEMPLATE_PROCESSOR_KEY]());
 	}
 
@@ -33,28 +35,27 @@ class DataTierList extends HTMLElement {
 	}
 
 	set items(items) {
-		//	same value set - exit eagerly
 		if (this[ITEMS_KEY] === items) {
 			return;
 		}
 
-		//	not an Array - exit eagerly
-		if (!Array.isArray(items)) {
-			if (this[ITEMS_KEY] && this[ITEMS_KEY].length) {
-				console.warn(`array of items expected (empty array or null allowed), but got '${items}'; nor further action taken`);
+		if (items === null || items === '') {
+			if (this[ITEMS_KEY]) {
+				this[ITEMS_KEY].unobserve(this[OBSERVER_KEY]);
+				this[ITEMS_KEY] = null;
+				this[FULL_UPDATER_KEY]();
 			}
-			return;
-		}
+		} else if (typeof items === 'object') {
+			if (this[ITEMS_KEY]) {
+				this[ITEMS_KEY].unobserve(this[OBSERVER_KEY]);
+			}
 
-		//	remove old model
-		if (this[ITEMS_KEY]) {
-			this[ITEMS_KEY].unobserve(this[OBSERVER_KEY]);
+			this[ITEMS_KEY] = Observable.from(items);
+			this[ITEMS_KEY].observe(this[OBSERVER_KEY], { pathsOf: '' });
+			this[FULL_UPDATER_KEY]();
+		} else {
+			console.error(`items MAY ONLY be set to an object, got '${items}'`);
 		}
-
-		//	create/update model
-		this[ITEMS_KEY] = Observable.from(items);
-		this[ITEMS_KEY].observe(this[OBSERVER_KEY], { pathsOf: '' });
-		this[FULL_UPDATER_KEY]();
 	}
 
 	get items() {
@@ -97,7 +98,6 @@ class DataTierList extends HTMLElement {
 		this.__currentTemplate = templateNodes[0];
 
 		//	TODO: any preprocessing/optimisations go here
-		//	TODO: set mutation observer to track inner changes as well
 		this[TEMPLATE_KEY] = newTemplate;
 		this[FULL_UPDATER_KEY]();
 	}
@@ -113,7 +113,7 @@ class DataTierList extends HTMLElement {
 	}
 
 	[FULL_UPDATER_KEY]() {
-		if (!this[TEMPLATE_KEY] || !this[ITEMS_KEY]) {
+		if (!this[TEMPLATE_KEY] || !this.items) {
 			return;
 		}
 
@@ -122,9 +122,9 @@ class DataTierList extends HTMLElement {
 			inParentAdjust = targetContainer.contains(this) ? 1 : 0;
 
 		const
-			items = this.items,
-			currentListLength = targetContainer.childElementCount - inParentAdjust,
-			desiredListLength = items.length;
+			keys = Object.keys(this.items),
+			desiredListLength = keys.length,
+			currentListLength = targetContainer.childElementCount - inParentAdjust;
 
 		let llc = currentListLength,
 			lastElementChild;
@@ -150,12 +150,13 @@ class DataTierList extends HTMLElement {
 
 		for (let i = inParentAdjust, l = targetContainer.children.length; i < l; i++) {
 			const c = targetContainer.children[i];
-			ties.update(c, items[i - inParentAdjust]);
+			c[ITEM_KEY] = keys[i - inParentAdjust];
+			ties.update(c, this.items[keys[i - inParentAdjust]]);
 		}
 	}
 
 	[PART_UPDATER_KEY](change) {
-		if (!this[TEMPLATE_KEY] || !this[ITEMS_KEY]) {
+		if (!this[TEMPLATE_KEY] || !this.items) {
 			return;
 		}
 
@@ -167,20 +168,43 @@ class DataTierList extends HTMLElement {
 		if (change.path.length > 1) {
 			return;
 		}
-		if (change.type === 'insert') {
-			t.innerHTML = this[TEMPLATE_KEY];
-			ties.create(t.content.firstElementChild, change.value);
-			targetContainer.insertBefore(t.content, targetContainer.children[change.path[0] + inParentAdjust]);
-		} else if (change.type === 'update') {
-			//	TODO
-		} else if (change.type === 'delete') {
-			targetContainer.removeChild(targetContainer.children[change.path[0] + inParentAdjust]);
-		} else if (change.type === 'reverse') {
-			for (var i = inParentAdjust + 1, l = targetContainer.children.length - inParentAdjust / 2; i < l; i++) {
-				targetContainer.insertBefore(targetContainer.children[i], targetContainer.children[i - 1]);
+		if (Array.isArray(this.items)) {
+			const affectedIndex = parseInt(change.path[0]);
+			if (change.type === 'insert') {
+				t.innerHTML = this[TEMPLATE_KEY];
+				ties.create(t.content.firstElementChild, change.value);
+				targetContainer.insertBefore(t.content, targetContainer.children[affectedIndex + inParentAdjust]);
+			} else if (change.type === 'update') {
+				ties.update(targetContainer.children[affectedIndex + inParentAdjust], change.value);
+			} else if (change.type === 'delete') {
+				targetContainer.removeChild(targetContainer.children[affectedIndex + inParentAdjust]);
+			} else if (change.type === 'reverse') {
+				for (var i = inParentAdjust + 1, l = targetContainer.children.length - inParentAdjust / 2; i < l; i++) {
+					targetContainer.insertBefore(targetContainer.children[i], targetContainer.children[i - 1]);
+				}
+			} else {
+				console.warn(`unsupported change type ${change.type}`);
 			}
 		} else {
-			console.warn(`unsupported change type ${change.type}`);
+			const itemKeys = Object.keys(this.items);
+			const affectedIndex = itemKeys.indexOf(change.path[0]);
+			if (change.type === 'insert') {
+				t.innerHTML = this[TEMPLATE_KEY];
+				ties.create(t.content.firstElementChild, change.value);
+				//	TODO: add test that breaks and fix it for object
+				targetContainer.insertBefore(t.content, targetContainer.children[change.path[0] + inParentAdjust]);
+			} else if (change.type === 'update') {
+				ties.update(targetContainer.children[affectedIndex + inParentAdjust], change.value);
+			} else if (change.type === 'delete') {
+				for (const child of targetContainer.children) {
+					if (child[ITEM_KEY] === change.path[0]) {
+						child.remove();
+						break;
+					}
+				}
+			} else {
+				console.warn(`unsupported change type ${change.type}`);
+			}
 		}
 	}
 }
