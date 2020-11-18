@@ -62,6 +62,7 @@ jobs:
       - name: Bump master to the next snapshot
         run: |
           node ./ci/tools/version-utils.js -s patch
+          npm install
           git fetch
           git config user.email "gullerya@gmail.com"
           git config user.name "object-observer CI"
