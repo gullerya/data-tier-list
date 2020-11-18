@@ -1,6 +1,6 @@
 {
 	"name": "data-tier-list",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "List component based on DataTier binding engine",
 	"keywords": [
 		"datatier",
