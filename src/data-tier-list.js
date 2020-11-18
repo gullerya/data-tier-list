@@ -169,7 +169,7 @@ class DataTierList extends HTMLElement {
 			return;
 		}
 		if (Array.isArray(this.items)) {
-			const affectedIndex = parseInt(change.path[0]);
+			const affectedIndex = parseInt(change.path[0], 10);
 			if (change.type === 'insert') {
 				t.innerHTML = this[TEMPLATE_KEY];
 				ties.create(t.content.firstElementChild, change.value);
