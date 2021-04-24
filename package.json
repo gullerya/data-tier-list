@@ -25,7 +25,7 @@
 		"url": "https://github.com/gullerya/data-tier-list/issues",
 		"email": "gullerya@gmail.com"
 	},
-	"license": "MIT",
+	"license": "ISC",
 	"files": [
 		"dist"
 	],
@@ -47,13 +47,13 @@
 		"test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json"
 	},
 	"dependencies": {
-		"data-tier": "^2.11.1"
+		"data-tier": "^3.1.6"
 	},
 	"devDependencies": {
-		"eslint": "^7.13.0",
-		"fs-extra": "^9.0.1",
+		"eslint": "^7.25.0",
+		"fs-extra": "^9.1.0",
 		"uglify-es": "^3.3.9",
 		"just-test": "2.3.2",
-		"puppeteer": "^5.5.0"
+		"puppeteer": "^9.0.0"
 	}
 }
