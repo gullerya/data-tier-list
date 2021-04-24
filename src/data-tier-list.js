@@ -26,7 +26,7 @@ class DataTierList extends HTMLElement {
 	}
 
 	connectedCallback() {
-		this.setAttribute('hidden', '');
+		this.hidden = true;
 		this[TEMPLATE_PROCESSOR_KEY]();
 	}
 

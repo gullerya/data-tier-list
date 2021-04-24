@@ -19,7 +19,7 @@ suite.runTest({ name: 'e2e flow - data set tied via HTML' }, async test => {
 	//	create view
 	const v = document.createElement('div');
 	v.innerHTML = `
-		<data-tier-list data-tie="${tn}:items">
+		<data-tier-list data-tie="${tn}:items => items">
 			<span class="item" data-tie="scope:label"></span>
 		</data-tier-list>
 	`;

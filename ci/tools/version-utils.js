@@ -1,64 +1,103 @@
 /**
- * acceptible params:
- * -v | --version followed by:
- * 		x.y.z - validate the new version and bump to 'x.y.z'
- * 		patch - extract the old version and auto bump to 'x.y.{z + 1}'
- * 		minor - extract the old version and auto bump to 'x.{y + 1}.0'
- * 		major - extract the old version and auto bump to '{x + 1}.0.0'
- * -s | --snapshot followed by:
- * 		x.y.z - validate the new version and bump to 'x.y.z-snapshot'
- * 		patch - extract the old version and auto bump to 'x.y.{z + 1}-snapshot'
- * 		minor - extract the old version and auto bump to 'x.{y + 1}.0-snapshot'
- * 		major - extract the old version and auto bump to '{x + 1}.0.0-snapshot'
+ * CLI utility to manaage version (in package.json file only, as of now)
+ *  - capable to: set version, mark as snapshot or remove snapshot (release)
+ *  - does nothing but touch to the package.json file (no Git, no actual release etc)
+ *  - validates that the new version is higher than the current
+ *  - validates sem-ver format
+ *
+ * Usage:
+ * 
+ *  node version-utils.js -v=<version>         set version
+ *  node version-utils.js -v=<version> -s      add snapshot suffix to the newly specified version
+ *  node version-utils.js -r                   remove snapshot suffix, if any
+ * 
+ * Params:
+ * 
+ *  -v | --version
+ * 	    sets version as per following:
+ * 	        major - increase current version as '{x + 1}.0.0'
+ * 	        minor - increase current version as 'x.{y + 1}.0'
+ * 	        patch - increase current version as 'x.y.{z + 1}'
+ * 	        x.y.z - set current version to 'x.y.z'
+ * 	    MAY NOT decrease version
+ * 
+ *  -s | --snapshot
+ * 	    adds '-snapshot' to the newly specified version
+ * 	    MAY ONLY be used with '-v'
+ * 
+ *  -r | --release
+ * 	    removes snapshot suffix from the current version, if present
+ * 	    MAY NOT be used with '-v'
  */
 
-import process from 'process';
+import os from 'os';
 import fs from 'fs';
 
+// execution
+
 const args = translateCLArguments(process.argv);
-console.log(`params: ${JSON.stringify(args)}`);
+console.info(`params: ${JSON.stringify(args)}${os.EOL}`);
 main(args);
-console.log('done');
+console.info(`${os.EOL}done${os.EOL}`);
+
+// definitions
 
 function main() {
-	let snapshot;
-	let paramValue;
-	if ((paramValue = args['-v'] || args['--version'])) {
-		snapshot = false;
-	} else if ((paramValue = args['-s'] || args['--snapshot'])) {
-		snapshot = true;
-	} else {
-		console.log('no relevant params found');
+	const version = args['-v'] || args['--version'];
+	const release = '-r' in args || '--release' in args;
+	const snapshot = '-s' in args || '--snapshot' in args;
+
+	if (!version && !release) {
+		console.warn('\trequired param (-v | -r) missing');
 		return;
 	}
-	const [oldPlain, oldParsed] = getCurrentPackageVersion();
-	let newPlain, newParsed;
-	if (paramValue === 'major') {
-		newParsed = [oldParsed[0] + 1, 0, 0];
-	} else if (paramValue === 'minor') {
-		newParsed = [oldParsed[0], oldParsed[1] + 1, 0];
-	} else if (paramValue === 'patch') {
-		newParsed = [oldParsed[0], oldParsed[1], oldParsed[2] + 1];
-	} else {
-		newParsed = parseAndValidate(paramValue);
-		validateAgainstExisting(newParsed, snapshot, oldParsed, oldPlain.endsWith('snapshot'));
+	if (release && version) {
+		console.warn(`\t'-r' MAY NOT be used with '-v'`);
+		return;
+	}
+	if (snapshot && !version) {
+		console.warn(`\t'-s' MAY ONLY be used with '-v'`);
+		return;
 	}
 
-	newPlain = newParsed.join('.') + (snapshot ? '-snapshot' : '');
-	console.log(`updating from ${oldPlain} to ${newPlain}`);
+	const [oldPlain, oldParsed] = getCurrentPackageVersion();
+
+	let newPlain, newParsed;
+	if (version) {
+		switch (version) {
+			case 'major':
+				newParsed = [oldParsed[0] + 1, 0, 0];
+				break;
+			case 'minor':
+				newParsed = [oldParsed[0], oldParsed[1] + 1, 0];
+				break;
+			case 'patch':
+				newParsed = [oldParsed[0], oldParsed[1], oldParsed[2] + 1];
+				break;
+			default:
+				newParsed = parseAndValidate(version);
+				validateAgainstExisting(newParsed, snapshot, oldParsed, oldPlain.endsWith('snapshot'));
+		}
+		newPlain = newParsed.join('.') + (snapshot ? '-snapshot' : '');
+	} else if (release) {
+		newPlain = oldPlain.replace(/-snapshot$/, '');
+	} else {
+		throw new Error(`something when wrong with arguments validation; file issue and cite this: 'failed on args: [${process.argv.join(' ')}]'`);
+	}
+
+	console.info(`\tupdate: ${oldPlain} => ${newPlain}`);
 	updatePackageVersion(newPlain, oldPlain);
 }
 
 function translateCLArguments(input) {
 	const result = {};
-	for (let i = 2, l = input.length; i < l; i++) {
-		if (input[i] && input[i].startsWith('-')) {
-			const effectiveKey = input[i];
-			if (effectiveKey in result) {
-				throw new Error(`duplicate param '${effectiveKey}'`);
-			}
-			result[effectiveKey] = input[++i];
+	for (const arg of input.slice(2)) {
+		if (!arg || !arg.startsWith('-')) { continue; }
+		const [key, val] = arg.split('=');
+		if (key in result) {
+			throw new Error(`duplicate param '${key}'`);
 		}
+		result[key] = val || '';
 	}
 	return result;
 }

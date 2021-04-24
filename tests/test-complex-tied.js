@@ -6,12 +6,12 @@ const suite = getSuite({ name: 'Complex cases - tied usage' });
 const htmlTemplate = `
 	<data-tier-list>
 		<div>
-			<span data-tie="scope:name => textContent"></span>
+			<span data-tie="scope:name"></span>
 			<input type="text" data-tie="scope:description"/>
 			<input type="checkbox" data-tie="scope:available"/>
 			<span data-tie="scope:amount"></span>
 			<div style="display: inline-block">
-				<span data-tie="scope:location.city => textContent"></span>
+				<span data-tie="scope:location.city"></span>
 				<span data-tie="scope:location.street"></span>
 				<input type="text" data-tie="scope:location.number"/>
 			</div>
@@ -39,7 +39,7 @@ suite.runTest({ name: 'complex grid content - set items' }, async test => {
 	const tn = test.getRandom(8);
 	const model = DataTier.ties.create(tn, createNItems(20));
 
-	e.firstElementChild.dataset.tie = `${tn}`
+	e.firstElementChild.dataset.tie = `${tn} => items`
 	await test.waitNextMicrotask();
 	test.assertEqual(21, e.childElementCount);
 	test.assertEqual('Name 1', e.children[1].children[0].textContent);

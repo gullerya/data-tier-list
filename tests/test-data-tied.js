@@ -8,7 +8,7 @@ suite.runTest({ name: 'tied with a simple (non-scoped) tie' }, async test => {
 	const tn = test.getRandom(8);
 	const e = document.createElement('div');
 	e.innerHTML = `
-		<data-tier-list data-tie="${tn}">
+		<data-tier-list data-tie="${tn} => items">
 			<div data-tie="scope:text"></div>
 		</data-tier-list>
 	`;
@@ -38,7 +38,7 @@ suite.runTest({ name: 'scoped tying with overlapping (shadowing property)' }, as
 		<div data-tie="${tn} => scope">
 			<div class="title" data-tie="scope:title"></div>
 			<div class="list">
-				<data-tier-list data-tie="scope:items">
+				<data-tier-list data-tie="scope:items => items">
 					<div class="template" data-tie="scope:title">[overridden content]</div>
 				</data-tier-list>
 			</div>
