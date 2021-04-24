@@ -1,7 +1,6 @@
 name: Trigger 'data-tier-list' release
 
 on:
-  push: [*]
   workflow_dispatch:
     inputs:
       version:
