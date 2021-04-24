@@ -18,7 +18,7 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 	document.body.appendChild(e);
 
 	const r = document.createElement('data-tier-list');
-	r.dataset.tie = tn;
+	r.dataset.tie = `${tn} => items`;
 	r.setAttribute('data-list-target', `.${tn}`);
 	r.innerHTML = `
 		<option data-tie="scope:text => textContent, scope:value => value"></option>
@@ -111,6 +111,26 @@ suite.runTest({ name: 'validate binding item as a whole' }, async test => {
 	e.innerHTML = `
 		<data-tier-list data-tie="${tn} => items">
 			<span data-tie="scope:text"></span>
+		</data-tier-list>
+	`;
+
+	//	initial insert
+	document.body.appendChild(e);
+	await new Promise(res => setTimeout(res, 0));
+	let children = Array.from(e.children).filter(c => c.nodeName === 'SPAN');
+	if (children.length !== 3) test.fail('expected to have 3 spans, found ' + children.length);
+	if (children[0].textContent !== 'A') test.fail('span 0 is not as expected');
+	if (children[1].textContent !== 'B') test.fail('span 1 is not as expected');
+	if (children[2].textContent !== 'C') test.fail('span 2 is not as expected');
+});
+
+suite.runTest({ name: 'validate binding primitives' }, async test => {
+	const tn = test.getRandom(8);
+	DataTier.ties.create(tn, ['A', 'B', 'C']);
+	const e = document.createElement('div');
+	e.innerHTML = `
+		<data-tier-list data-tie="${tn} => items">
+			<span data-tie="scope"></span>
 		</data-tier-list>
 	`;
 
