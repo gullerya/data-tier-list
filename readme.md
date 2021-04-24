@@ -11,11 +11,11 @@
 `data-tier-list` is a WebComponent, that provides repetative view functionality given any HTML template and a data set.
 
 Main features and concepts:
-* supported data set types: `Array`, `Object`
-* if a provided data set is is not an [observable](https://github.com/gullerya/object-observer/blob/master/docs/observable.md), it is transformed (cloned) into such one
-* data set mutations are observed and reflected
-* template mutations are observed and reflected
-* uniformity of a data items **is not** validated/enforced
+- supported data set types: `Array`, `Object`
+- if a provided data set is is not an [observable](https://github.com/gullerya/object-observer/blob/master/docs/observable.md), it is transformed (cloned) into such one
+- data set mutations are observed and reflected
+- template mutations are observed and reflected
+- uniformity of a data items **is not** validated/enforced
 
 `data-tier-list` relies on a [data-tier](https://github.com/gullerya/data-tier) library for the model-view tying part.
 
@@ -45,7 +45,7 @@ CDN features:
 - highly available (with many geo spread edges)
 - agressive caching setup
 
-# APIs and conditions
+## API
 
 - `data-tier-list` element self and it's light DOM __are not__ displayed
 - light DOM of the `data-tier-list` is taken as a __template__ for a single item
