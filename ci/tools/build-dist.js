@@ -8,12 +8,12 @@ process.stdout.write('*** CLEANUP ***' + os.EOL);
 fsExtra.emptyDirSync('./dist');
 
 process.stdout.write('*** BUILD ***' + os.EOL);
-fsExtra.copySync('./node_modules/data-tier/dist', './src/data-tier');
-fsExtra.removeSync('./src/data-tier/data-tier.js');
-fsExtra.removeSync('./src/data-tier/dom-processor.js');
-fsExtra.removeSync('./src/data-tier/ties.js');
-fsExtra.removeSync('./src/data-tier/utils.js');
-fsExtra.removeSync('./src/data-tier/views.js');
+// fsExtra.copySync('./node_modules/data-tier/dist', './src/data-tier');
+// fsExtra.removeSync('./src/data-tier/data-tier.js');
+// fsExtra.removeSync('./src/data-tier/dom-processor.js');
+// fsExtra.removeSync('./src/data-tier/ties.js');
+// fsExtra.removeSync('./src/data-tier/utils.js');
+// fsExtra.removeSync('./src/data-tier/views.js');
 fsExtra.copySync('./src', './dist');
 
 process.stdout.write('*** MINIFY ***' + os.EOL);
