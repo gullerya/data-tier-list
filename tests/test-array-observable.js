@@ -1,6 +1,6 @@
 import { getSuite } from '../node_modules/just-test/dist/just-test.js';
+import { ties } from '../node_modules/data-tier/dist/data-tier.min.js';
 import '../dist/data-tier-list.js';
-import { ties } from 'data-tier';
 
 const suite = getSuite({ name: 'Usage - array observable' });
 

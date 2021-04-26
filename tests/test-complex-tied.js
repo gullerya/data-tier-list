@@ -1,5 +1,5 @@
 import { getSuite } from '../node_modules/just-test/dist/just-test.js';
-import * as DataTier from 'data-tier';
+import * as DataTier from '../node_modules/data-tier/dist/data-tier.min.js';
 import '../dist/data-tier-list.js';
 
 const suite = getSuite({ name: 'Complex cases - tied usage' });
