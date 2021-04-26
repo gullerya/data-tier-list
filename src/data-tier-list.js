@@ -1,4 +1,4 @@
-import { ties, Observable } from '../node_modules/data-tier/dist/data-tier.min.js';
+import { ties, Observable } from 'data-tier';
 
 const
 	DATA_TIER_LIST = 'data-tier-list',

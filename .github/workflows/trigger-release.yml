@@ -35,8 +35,8 @@ jobs:
           echo "RELEASE_VERSION=$(cat package.json | jq -r '.version')" >> $GITHUB_ENV
 
       # Build & Verify new version
-      - name: Build
-        run: npm run build
+      - name: Build (local)
+        run: npm run build:test
 
       - name: Lint
         run: npm run lint

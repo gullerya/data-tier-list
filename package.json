@@ -43,6 +43,8 @@
 	},
 	"scripts": {
 		"build": "node ./ci/tools/build-utils.js",
+		"build:test": "node ./ci/tools/build-utils.js --importmap=ci/importmap-local.json",
+		"build:cdn": "node ./ci/tools/build-utils.js --importmap=ci/importmap-cdn.json",
 		"lint": "eslint -c ./ci/.eslintrc.json ./src/*.js ./tests/*.js ./ci/**/*.js",
 		"test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json",
 		"bump": "node ./ci/tools/version-utils.js"

@@ -11,8 +11,12 @@ fsExtra.copySync('./src', './dist');
 
 console.info('*** PROCESS IMPORT MAPS ***');
 const importMapResourceArg = process.argv.find(a => a.startsWith('--importmap='));
-const importMapResource = typeof importMapResourceArg === 'string' ? importMapResourceArg.replace('--importmap=', '') : null;
-processImportMaps('./dist', importMapResource);
+if (importMapResourceArg) {
+	const importMapResource = importMapResourceArg.replace('--importmap=', '');
+	processImportMaps('./dist', importMapResource);
+} else {
+	console.info('\timport map resource not specified, skipping this step');
+}
 
 console.info('*** MINIFY ***');
 fs.writeFileSync(
@@ -55,18 +59,13 @@ function processImportMaps(rootFolder, importMapResource) {
 }
 
 function prepareImportMap(importMapResource) {
-	const defaultImportMapResource = 'importmap.json';
-	if (!importMapResource) {
-		console.log(`no import map resource specified, falling back to default '${defaultImportMapResource}'`);
-		importMapResource = defaultImportMapResource;
-	}
-	let importMapText;
+	let result = null;
 	try {
-		importMapText = fs.readFileSync(importMapResource, { encoding: 'utf-8' });
+		const importMapText = fs.readFileSync(importMapResource, { encoding: 'utf-8' });
+		result = JSON.parse(importMapText);
 	} catch (e) {
-		console.error(`failed to read import map resource from '${importMapResource}' due to following:`);
+		console.error(`failed to read/parse import map resource from '${importMapResource}' due to following:`);
 		console.error(e);
-		process.exit(1);
 	}
-	return JSON.parse(importMapText);
+	return result;
 }
