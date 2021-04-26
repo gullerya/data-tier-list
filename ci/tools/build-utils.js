@@ -25,8 +25,8 @@ fs.writeFileSync(
 	uglifyES.minify({ 'dist/data-tier-list.min.js': fs.readFileSync('dist/data-tier-list.js', { encoding: 'utf8' }) }).code
 );
 
-console.info(`*** GENERATE ${hashingAlgoritm} ***`);
 const hashingAlgoritm = 'sha512'
+console.info(`*** GENERATE ${hashingAlgoritm} ***`);
 for (const f of ['dist/data-tier-list.min.js', 'dist/data-tier-list.js']) {
 	const text = fs.readFileSync(f, { encoding: 'utf-8' });
 	const algo = crypto.createHash(hashingAlgoritm);
