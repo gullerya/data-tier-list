@@ -37,6 +37,7 @@ jobs:
       # Deploy to CDN (trigger)
       - name: Tirgger deploy to CDN
         run: |
+          git push origin --delete deploy
           git tag deploy
           git push origin HEAD:main deploy
 
