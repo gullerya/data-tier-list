@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import fsExtra from 'fs-extra';
 import uglifyES from 'uglify-es';
 
@@ -23,6 +24,18 @@ fs.writeFileSync(
 	'dist/data-tier-list.min.js',
 	uglifyES.minify({ 'dist/data-tier-list.min.js': fs.readFileSync('dist/data-tier-list.js', { encoding: 'utf8' }) }).code
 );
+
+console.info(`*** GENERATE ${hashingAlgoritm} ***`);
+const hashingAlgoritm = 'sha512'
+for (const f of ['dist/data-tier-list.min.js', 'dist/data-tier-list.js']) {
+	const text = fs.readFileSync(f, { encoding: 'utf-8' });
+	const algo = crypto.createHash(hashingAlgoritm);
+	const hash = algo.update(text, 'utf-8').digest().toString('base64');
+	console.info(`\t${hashingAlgoritm} of '${f}' is '${hash}'`);
+	//	TODO: put those 2 hashes into an example in the readme (should be copy-pasteable)
+	//	the hash should run before last commit that publishes to NPM (to be able to see it in the NPM up-to-date)
+	//	the actual CDN build will run as part of CDN, so the flow is somewhat split-merged...
+}
 
 console.info('*** DONE ***');
 
