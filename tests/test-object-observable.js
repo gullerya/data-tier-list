@@ -20,7 +20,7 @@ suite.runTest({ name: 'e2e flow - data set tied via HTML' }, async test => {
 	const v = document.createElement('div');
 	v.innerHTML = `
 		<data-tier-list data-tie="${tn}:items => items">
-			<span class="item" data-tie="scope:label"></span>
+			<span class="item" data-tie="item:label"></span>
 		</data-tier-list>
 	`;
 	document.body.appendChild(v);
@@ -52,7 +52,7 @@ suite.runTest({ name: 'e2e flow - data set tied via JS API' }, async test => {
 	const v = document.createElement('div');
 	v.innerHTML = `
 		<data-tier-list>
-			<span class="item" data-tie="scope:label"></span>
+			<span class="item" data-tie="item:label"></span>
 		</data-tier-list>
 	`;
 	v.querySelector('data-tier-list').items = m.items;

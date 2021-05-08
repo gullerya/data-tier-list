@@ -9,7 +9,7 @@ suite.runTest({ name: 'tied with a simple (non-scoped) tie' }, async test => {
 	const e = document.createElement('div');
 	e.innerHTML = `
 		<data-tier-list data-tie="${tn} => items">
-			<div data-tie="scope:text"></div>
+			<div data-tie="item:text"></div>
 		</data-tier-list>
 	`;
 	document.body.appendChild(e);
@@ -39,7 +39,7 @@ suite.runTest({ name: 'scoped tying with overlapping (shadowing property)' }, as
 			<div class="title" data-tie="scope:title"></div>
 			<div class="list">
 				<data-tier-list data-tie="scope:items => items">
-					<div class="template" data-tie="scope:title">[overridden content]</div>
+					<div class="template" data-tie="item:title">[original non-touched content]</div>
 				</data-tier-list>
 			</div>
 		</div>
@@ -55,11 +55,11 @@ suite.runTest({ name: 'scoped tying with overlapping (shadowing property)' }, as
 	test.assertEqual(2, e.children[0].childElementCount);
 	test.assertEqual('Title', titleElement.textContent);
 	test.assertEqual(4, listElement.childElementCount);
-	test.assertEqual('', templateElement.textContent);		//	due to blackboxing scoping
+	test.assertEqual('[original non-touched content]', templateElement.textContent);
 
 	await test.waitNextMicrotask();
 
-	test.assertEqual('', templateElement.textContent);
+	test.assertEqual('[original non-touched content]', templateElement.textContent);
 	for (const [i, te] of Array.from(listElement.children).entries()) {
 		if (te.matches('[hidden]')) continue;
 		test.assertEqual(m.items[i - 1].title, te.textContent);

@@ -15,7 +15,7 @@ suite.runTest({ name: 'shortest syntax, primitive values', skip: true }, async t
 	e.style.outline = '2px solid red';
 	e.innerHTML = `
 		<data-tier-list data-tie="${tn}">
-			<div data-tie="scope, scope => value"></div>
+			<div data-tie="item, item => value"></div>
 		</data-tier-list>
 	`;
 

@@ -92,9 +92,24 @@ class DataTierList extends HTMLElement {
 			newTemplate = templateNodes[0];
 		}
 
-
-		//	TODO: any preprocessing/optimisations go here
-		this[TEMPLATE_KEY] = newTemplate ? newTemplate.outerHTML : null;
+		let processedTemplate = null;
+		if (newTemplate) {
+			const matcher = /(?<= data-tie=["']{1}.*\b)item(?=\b)/g;
+			const origin = newTemplate.outerHTML;
+			let r;
+			let li = 0;
+			processedTemplate = '';
+			do {
+				r = matcher.exec(origin);
+				if (r) {
+					processedTemplate += origin.substring(li, r.index) + 'scope';
+					li = r.index + 4;
+				} else {
+					processedTemplate += origin.substring(li);
+				}
+			} while (r);
+		}
+		this[TEMPLATE_KEY] = processedTemplate;
 		this[FULL_UPDATER_KEY](true);
 	}
 

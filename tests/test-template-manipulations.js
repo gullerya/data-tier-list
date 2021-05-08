@@ -17,7 +17,7 @@ suite.runTest({ name: 'template change (top level) reflected' }, async test => {
 	template.innerHTML = `
 		<div id="${tid}"></div>
 		<data-tier-list id="${lid}" data-list-target="#${tid}">
-			<span data-tie="scope"></span>
+			<span data-tie="item"></span>
 		</data-tier-list>
 	`;
 	document.body.appendChild(template.content);
@@ -32,7 +32,7 @@ suite.runTest({ name: 'template change (top level) reflected' }, async test => {
 		test.assertEqual(le.items[i], c.textContent);
 	});
 
-	le.innerHTML = '<div data-tie="scope"></div>';
+	le.innerHTML = '<div data-tie="item"></div>';
 	await test.waitNextMicrotask();
 
 	test.assertEqual(3, te.childElementCount);
@@ -50,7 +50,7 @@ suite.runTest({ name: 'template change (nested child) reflected' }, async test =
 		<div id="${tid}"></div>
 		<data-tier-list id="${lid}" data-list-target="#${tid}">
 			<div>
-				<span data-tie="scope"></span>
+				<span data-tie="item"></span>
 			</div>
 		</data-tier-list>
 	`;
@@ -67,7 +67,7 @@ suite.runTest({ name: 'template change (nested child) reflected' }, async test =
 		test.assertEqual(le.items[i], c.firstElementChild.textContent);
 	});
 
-	le.firstElementChild.innerHTML = '<div data-tie="scope"></div>';
+	le.firstElementChild.innerHTML = '<div data-tie="item"></div>';
 	await test.waitNextMicrotask();
 
 	test.assertEqual(3, te.childElementCount);

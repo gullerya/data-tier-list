@@ -6,14 +6,14 @@ const suite = getSuite({ name: 'Complex cases - tied usage' });
 const htmlTemplate = `
 	<data-tier-list>
 		<div>
-			<span data-tie="scope:name"></span>
-			<input type="text" data-tie="scope:description"/>
-			<input type="checkbox" data-tie="scope:available"/>
-			<span data-tie="scope:amount"></span>
+			<span data-tie="item:name"></span>
+			<input type="text" data-tie="item:description"/>
+			<input type="checkbox" data-tie="item:available"/>
+			<span data-tie="item:amount"></span>
 			<div style="display: inline-block">
-				<span data-tie="scope:location.city"></span>
-				<span data-tie="scope:location.street"></span>
-				<input type="text" data-tie="scope:location.number"/>
+				<span data-tie="item:location.city"></span>
+				<span data-tie="item:location.street"></span>
+				<input type="text" data-tie="item:location.number"/>
 			</div>
 		</div>
 	</data-tier-list>

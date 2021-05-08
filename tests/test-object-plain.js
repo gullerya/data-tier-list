@@ -15,7 +15,7 @@ suite.runTest({ name: 'e2e flow - data set via JS API' }, async test => {
 	const v = document.createElement('div');
 	v.innerHTML = `
 		<data-tier-list>
-			<span class="item" data-tie="scope:label"></span>
+			<span class="item" data-tie="item:label"></span>
 		</data-tier-list>
 	`;
 	v.querySelector('data-tier-list').items = mBase;
