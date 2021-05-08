@@ -39,10 +39,6 @@ class DataTierList extends HTMLElement {
 		this.templateObserver.disconnect();
 	}
 
-	get defaultTieTarget() {
-		return 'items';
-	}
-
 	set items(items) {
 		if (this[ITEMS_KEY] === items) {
 			return;
@@ -86,24 +82,19 @@ class DataTierList extends HTMLElement {
 	}
 
 	[TEMPLATE_PROCESSOR_KEY]() {
-		const templateNodes = this.children;
 		let newTemplate = null;
-		if (templateNodes.length === 1) {
-			newTemplate = templateNodes[0].outerHTML;
-		} else {
-			console.error(`list item template MAY have 1 root element only, got ${templateNodes.length}`);
-			return;
+		const templateNodes = this.children;
+
+		if (templateNodes.length > 1) {
+			console.error(`list item template MAY have 1 root element only, got ${templateNodes.length}; working with the first one`);
+		}
+		if (templateNodes.length > 0) {
+			newTemplate = templateNodes[0];
 		}
 
-		//	scoping the template self to prevent shadowing
-		if (this.__currentTemplate) {
-			ties.remove(this.__currentTemplate);
-		}
-		ties.update(templateNodes[0], null);
-		this.__currentTemplate = templateNodes[0];
 
 		//	TODO: any preprocessing/optimisations go here
-		this[TEMPLATE_KEY] = newTemplate;
+		this[TEMPLATE_KEY] = newTemplate ? newTemplate.outerHTML : null;
 		this[FULL_UPDATER_KEY](true);
 	}
 
