@@ -1,4 +1,4 @@
-name: Deploy 'data-tier-list' to CDN
+name: Deploy to CDN
 
 on:
   push:
