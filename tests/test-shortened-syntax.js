@@ -4,29 +4,23 @@ import '../dist/data-tier-list.js';
 
 const suite = getSuite({ name: 'Tying syntaxes' });
 
-suite.runTest({ name: 'shortest syntax, primitive values', skip: true }, async test => {
+suite.runTest({ name: 'shortest syntax, primitive values' }, async test => {
 	const
 		tn = test.getRandom(8),
-		tie = DataTier.ties.create(tn, [
-			'A', 'B', 'C'
-		]),
+		tie = DataTier.ties.create(tn, ['A', 'B', 'C']),
 		e = document.createElement('div');
 
-	e.style.outline = '2px solid red';
 	e.innerHTML = `
-		<data-tier-list data-tie="${tn}">
+		<data-tier-list data-tie="${tn} => items">
 			<div data-tie="item, item => value"></div>
 		</data-tier-list>
 	`;
 
-	//	initial insert
 	document.body.appendChild(e);
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	const children = e.querySelectorAll('div');
 	test.assertEqual(4, children.length);
-	if (children[1].textContent !== 'A' || children[1].value !== 'A') test.fail('item 0 is not as expected');
-	if (children[2].textContent !== 'B' || children[2].value !== 'B') test.fail('item 1 is not as expected');
-	if (children[3].textContent !== 'C' || children[3].value !== 'C') test.fail('item 2 is not as expected');
-
-	DataTier.ties.remove(tie);
+	test.assertEqual('A', children[1].textContent);
+	test.assertEqual('B', children[2].textContent);
+	test.assertEqual('C', children[3].textContent);
 });

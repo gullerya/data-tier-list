@@ -116,7 +116,7 @@ suite.runTest({ name: 'validate binding item as a whole' }, async test => {
 
 	//	initial insert
 	document.body.appendChild(e);
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	let children = Array.from(e.children).filter(c => c.nodeName === 'SPAN');
 	if (children.length !== 3) test.fail('expected to have 3 spans, found ' + children.length);
 	if (children[0].textContent !== 'A') test.fail('span 0 is not as expected');
@@ -136,7 +136,7 @@ suite.runTest({ name: 'validate binding primitives' }, async test => {
 
 	//	initial insert
 	document.body.appendChild(e);
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	let children = Array.from(e.children).filter(c => c.nodeName === 'SPAN');
 	if (children.length !== 3) test.fail('expected to have 3 spans, found ' + children.length);
 	if (children[0].textContent !== 'A') test.fail('span 0 is not as expected');
