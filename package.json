@@ -1,6 +1,6 @@
 {
 	"name": "data-tier-list",
-	"version": "1.2.4-snapshot",
+	"version": "2.0.0-snapshot",
 	"description": "List component based on DataTier binding engine",
 	"keywords": [
 		"datatier",
@@ -50,13 +50,13 @@
 		"bump": "node ./ci/tools/version-utils.js"
 	},
 	"dependencies": {
-		"data-tier": "^3.1.6"
+		"data-tier": "^3.2.0"
 	},
 	"devDependencies": {
-		"eslint": "^7.25.0",
-		"fs-extra": "^9.1.0",
+		"eslint": "^7.26.0",
+		"fs-extra": "^10.0.0",
 		"just-test": "2.3.2",
-		"puppeteer": "^9.0.0",
+		"puppeteer": "^9.1.1",
 		"uglify-es": "^3.3.9"
 	}
 }

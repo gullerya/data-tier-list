@@ -2,7 +2,6 @@ import { ties, Observable } from 'data-tier';
 
 const
 	DATA_TIER_LIST = 'data-tier-list',
-	SELF_TEMPLATE = `<slot id="template"></slot>`,
 	ITEM_KEY = Symbol('item.key'),
 	ITEMS_KEY = Symbol('items.key'),
 	TEMPLATE_KEY = Symbol('template'),
@@ -19,18 +18,25 @@ class DataTierList extends HTMLElement {
 		this[ITEMS_KEY] = null;
 		this[TEMPLATE_KEY] = null;
 		this[OBSERVER_KEY] = this[OBSERVER_KEY].bind(this);
-		this.attachShadow({ mode: 'open' }).innerHTML = SELF_TEMPLATE;
-		//	TODO: replace the below one with MutationObserver
-		this.shadowRoot.querySelector('#template').addEventListener('slotchange', () => this[TEMPLATE_PROCESSOR_KEY]());
 	}
 
 	connectedCallback() {
 		this.hidden = true;
+		this.templateObserver = new MutationObserver(() => {
+			this.templateObserver.takeRecords();
+			this[TEMPLATE_PROCESSOR_KEY]();
+		});
+		this.templateObserver.observe(this, {
+			subtree: true,
+			childList: true,
+			attributes: true,
+			characterData: true
+		});
 		this[TEMPLATE_PROCESSOR_KEY]();
 	}
 
-	get defaultTieTarget() {
-		return 'items';
+	disconnectedCallback() {
+		this.templateObserver.disconnect();
 	}
 
 	set items(items) {
@@ -76,29 +82,35 @@ class DataTierList extends HTMLElement {
 	}
 
 	[TEMPLATE_PROCESSOR_KEY]() {
-		const templateNodes = this.children;
 		let newTemplate = null;
-		if (templateNodes.length === 1) {
-			newTemplate = templateNodes[0].outerHTML;
-		} else {
-			console.error(`list item template MAY have 1 root element only, got ${templateNodes.length}`);
-			return;
+		const templateNodes = this.children;
+
+		if (templateNodes.length > 1) {
+			console.error(`list item template MAY have 1 root element only, got ${templateNodes.length}; working with the first one`);
+		}
+		if (templateNodes.length > 0) {
+			newTemplate = templateNodes[0];
 		}
 
-		if (templateNodes[0] === this.__currentTemplate) {
-			return;
+		let processedTemplate = null;
+		if (newTemplate) {
+			const matcher = /(?<= data-tie=["']{1}.*\b)item(?=\b)/g;
+			const origin = newTemplate.outerHTML;
+			let r;
+			let li = 0;
+			processedTemplate = '';
+			do {
+				r = matcher.exec(origin);
+				if (r) {
+					processedTemplate += origin.substring(li, r.index) + 'scope';
+					li = r.index + 4;
+				} else {
+					processedTemplate += origin.substring(li);
+				}
+			} while (r);
 		}
-
-		//	scoping the template self to prevent shadowing
-		if (this.__currentTemplate) {
-			ties.remove(this.__currentTemplate);
-		}
-		ties.create(templateNodes[0]);
-		this.__currentTemplate = templateNodes[0];
-
-		//	TODO: any preprocessing/optimisations go here
-		this[TEMPLATE_KEY] = newTemplate;
-		this[FULL_UPDATER_KEY]();
+		this[TEMPLATE_KEY] = processedTemplate;
+		this[FULL_UPDATER_KEY](true);
 	}
 
 	[OBSERVER_KEY](changes) {
@@ -111,7 +123,7 @@ class DataTierList extends HTMLElement {
 		}
 	}
 
-	[FULL_UPDATER_KEY]() {
+	[FULL_UPDATER_KEY](forceReplaceAll = false) {
 		if (!this[TEMPLATE_KEY] || !this.items) {
 			return;
 		}
@@ -128,9 +140,11 @@ class DataTierList extends HTMLElement {
 		let llc = currentListLength,
 			lastElementChild;
 
-		while (llc > desiredListLength) {
+
+		while (llc > (forceReplaceAll ? 0 : desiredListLength)) {
 			lastElementChild = targetContainer.lastElementChild;
 			if (lastElementChild !== this) {
+				ties.remove(lastElementChild);
 				lastElementChild.remove();
 			}
 			llc--;
@@ -171,7 +185,7 @@ class DataTierList extends HTMLElement {
 			const affectedIndex = parseInt(change.path[0], 10);
 			if (change.type === 'insert') {
 				t.innerHTML = this[TEMPLATE_KEY];
-				ties.create(t.content.firstElementChild, change.value);
+				ties.update(t.content.firstElementChild, change.value);
 				targetContainer.insertBefore(t.content, targetContainer.children[affectedIndex + inParentAdjust]);
 			} else if (change.type === 'update') {
 				ties.update(targetContainer.children[affectedIndex + inParentAdjust], change.value);
@@ -189,7 +203,7 @@ class DataTierList extends HTMLElement {
 			const affectedIndex = itemKeys.indexOf(change.path[0]);
 			if (change.type === 'insert') {
 				t.innerHTML = this[TEMPLATE_KEY];
-				ties.create(t.content.firstElementChild, change.value);
+				ties.update(t.content.firstElementChild, change.value);
 				//	TODO: add test that breaks and fix it for object
 				targetContainer.insertBefore(t.content, targetContainer.children[change.path[0] + inParentAdjust]);
 			} else if (change.type === 'update') {

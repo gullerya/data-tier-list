@@ -1,4 +1,4 @@
-name: Release 'data-tier-list'
+name: Release
 
 on:
   push:

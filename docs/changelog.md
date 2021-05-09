@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]()
 
+## [2.0.0 - 2021-05-08]()
+### Changed
+- scoping item key changed to `item` (breaking change)
+- added support for a list of primitives
+- updated dependencies
+
 ## [1.2.1 - 2021-04-24]()
 ### Changed
 - updated dependencies

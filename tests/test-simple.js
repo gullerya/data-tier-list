@@ -21,7 +21,7 @@ suite.runTest({ name: 'validate simple select options' }, async test => {
 	r.dataset.tie = `${tn} => items`;
 	r.setAttribute('data-list-target', `.${tn}`);
 	r.innerHTML = `
-		<option data-tie="scope:text => textContent, scope:value => value"></option>
+		<option data-tie="item:text => textContent, item:value => value"></option>
 	`;
 
 	//	initial insert
@@ -110,13 +110,13 @@ suite.runTest({ name: 'validate binding item as a whole' }, async test => {
 	const e = document.createElement('div');
 	e.innerHTML = `
 		<data-tier-list data-tie="${tn} => items">
-			<span data-tie="scope:text"></span>
+			<span data-tie="item:text"></span>
 		</data-tier-list>
 	`;
 
 	//	initial insert
 	document.body.appendChild(e);
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	let children = Array.from(e.children).filter(c => c.nodeName === 'SPAN');
 	if (children.length !== 3) test.fail('expected to have 3 spans, found ' + children.length);
 	if (children[0].textContent !== 'A') test.fail('span 0 is not as expected');
@@ -130,13 +130,13 @@ suite.runTest({ name: 'validate binding primitives' }, async test => {
 	const e = document.createElement('div');
 	e.innerHTML = `
 		<data-tier-list data-tie="${tn} => items">
-			<span data-tie="scope"></span>
+			<span data-tie="item"></span>
 		</data-tier-list>
 	`;
 
 	//	initial insert
 	document.body.appendChild(e);
-	await new Promise(res => setTimeout(res, 0));
+	await test.waitNextMicrotask();
 	let children = Array.from(e.children).filter(c => c.nodeName === 'SPAN');
 	if (children.length !== 3) test.fail('expected to have 3 spans, found ' + children.length);
 	if (children[0].textContent !== 'A') test.fail('span 0 is not as expected');

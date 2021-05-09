@@ -6,7 +6,7 @@ const htmlTemplate = `
 	<data-tier-list>
 		<div data-tie="scope => scope">
 			<data-tier-list data-tie="scope => items">
-				<span data-tie="scope:text"></span>
+				<span data-tie="item:text"></span>
 			</data-tier-list>
 		</div>
 	</data-tier-list>

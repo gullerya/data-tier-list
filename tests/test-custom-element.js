@@ -12,8 +12,8 @@ customElements.define('x-suite', class extends HTMLElement {
 			<div data-tie="scope:duration"></div>
 			<div data-tie="scope:tests.length"></div>
 			<div>
-			<data-tier-list data-tie="scope:tests">
-				<x-test data-tie="scope => scope"></x-test>
+			<data-tier-list data-tie="scope:tests => items">
+				<x-test data-tie="item => scope"></x-test>
 			</data-tier-list>
 			</div>
 		`;
@@ -39,8 +39,8 @@ suite.runTest({ name: 'validate list within custom element' }, async test => {
 	ce.innerHTML = `
 		<div data-tie="${tieKey}:suites.length"></div>
 		<div>
-		<data-tier-list data-tie="${tieKey}:suites">
-			<x-suite data-tie="scope => scope"></x-suite>
+		<data-tier-list data-tie="${tieKey}:suites => items">
+			<x-suite data-tie="item => scope"></x-suite>
 		</data-tier-list>
 		</div>
 	`;
@@ -52,5 +52,4 @@ suite.runTest({ name: 'validate list within custom element' }, async test => {
 		{ name: 'suite-a', duration: 2.3, tests: [{ name: 'test-a', status: 'pass' }, { name: 'test-b', status: 'pass' }, { name: 'test-c', status: 'pass' }] },
 		{ name: 'suite-b', duration: 12.6, tests: [{ name: 'test-1', status: 'pass' }, { name: 'test-2', status: 'fail' }] }
 	];
-	console.log('here');
 });
