@@ -7,9 +7,9 @@ const suite = getSuite({ name: 'Tying syntaxes' });
 suite.runTest({ name: 'shortest syntax, primitive values' }, async test => {
 	const
 		tn = test.getRandom(8),
-		tie = DataTier.ties.create(tn, ['A', 'B', 'C']),
 		e = document.createElement('div');
 
+	DataTier.ties.create(tn, ['A', 'B', 'C']);
 	e.innerHTML = `
 		<data-tier-list data-tie="${tn} => items">
 			<div data-tie="item, item => value"></div>
