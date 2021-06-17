@@ -50,13 +50,13 @@
 		"bump": "node ./ci/tools/version-utils.js"
 	},
 	"dependencies": {
-		"data-tier": "^3.2.0"
+		"data-tier": "^3.5.0"
 	},
 	"devDependencies": {
-		"eslint": "^7.26.0",
+		"eslint": "^7.28.0",
 		"fs-extra": "^10.0.0",
 		"just-test": "2.3.2",
-		"puppeteer": "^9.1.1",
+		"puppeteer": "^10.0.0",
 		"uglify-es": "^3.3.9"
 	}
 }
