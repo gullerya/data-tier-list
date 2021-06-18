@@ -89,27 +89,20 @@ class DataTierList extends HTMLElement {
 			console.error(`list item template MAY have 1 root element only, got ${templateNodes.length}; working with the first one`);
 		}
 		if (templateNodes.length > 0) {
-			newTemplate = templateNodes[0];
+			newTemplate = templateNodes[0].cloneNode(true);
 		}
 
-		let processedTemplate = null;
 		if (newTemplate) {
-			const matcher = /(?<= data-tie=["']{1}.*\b)item(?=\b)/g;
-			const origin = newTemplate.outerHTML;
-			let r;
-			let li = 0;
-			processedTemplate = '';
-			do {
-				r = matcher.exec(origin);
-				if (r) {
-					processedTemplate += origin.substring(li, r.index) + 'scope';
-					li = r.index + 4;
-				} else {
-					processedTemplate += origin.substring(li);
+			processTyingDeclaration(newTemplate, 'item', 'scope');
+			if (newTemplate.childElementCount) {
+				const tw = document.createTreeWalker(newTemplate, NodeFilter.SHOW_ELEMENT);
+				let next;
+				while ((next = tw.nextNode())) {
+					processTyingDeclaration(next, 'item', 'scope');
 				}
-			} while (r);
+			}
 		}
-		this[TEMPLATE_KEY] = processedTemplate;
+		this[TEMPLATE_KEY] = newTemplate.outerHTML;
 		this[FULL_UPDATER_KEY](true);
 	}
 
@@ -218,6 +211,20 @@ class DataTierList extends HTMLElement {
 			} else {
 				console.warn(`unsupported change type ${change.type}`);
 			}
+		}
+	}
+}
+
+function processTyingDeclaration(element, itemToken, scopeToken) {
+	const d = element.getAttribute('data-tie');
+	const r1 = new RegExp(`^${itemToken}(?=\\b)`);
+	const r2 = new RegExp(`[,;]{1}\\s*(${itemToken})(?=\\b)`, 'g');
+	if (d) {
+		let n = d
+			.replace(r1, scopeToken)
+			.replaceAll(r2, `, ${scopeToken}`);
+		if (n !== d) {
+			element.setAttribute('data-tie', n);
 		}
 	}
 }

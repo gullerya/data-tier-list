@@ -1,5 +1,5 @@
 {
 	"imports": {
-		"data-tier": "https://libs.gullerya.com/data-tier/3.1.6/data-tier.min.js"
+		"data-tier": "https://libs.gullerya.com/data-tier/3.5.0/data-tier.min.js"
 	}
 }
