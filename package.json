@@ -1,6 +1,6 @@
 {
 	"name": "data-tier-list",
-	"version": "2.1.2-snapshot",
+	"version": "2.1.2",
 	"description": "List component based on DataTier binding engine",
 	"keywords": [
 		"datatier",
@@ -27,7 +27,8 @@
 	},
 	"license": "ISC",
 	"files": [
-		"dist"
+		"dist",
+		"sri.json"
 	],
 	"main": "dist/data-tier-list.min.js",
 	"browser": "dist/data-tier-list.min.js",
@@ -46,17 +47,16 @@
 		"build:test": "node ./ci/tools/build-utils.js --importmap=ci/importmap-local.json",
 		"build:cdn": "node ./ci/tools/build-utils.js --importmap=ci/importmap-cdn.json",
 		"lint": "eslint -c ./ci/.eslintrc.json ./src/*.js ./tests/*.js ./ci/**/*.js",
-		"test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json",
-		"bump": "node ./ci/tools/version-utils.js"
+		"test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json"
 	},
 	"dependencies": {
-		"data-tier": "^3.5.0"
+		"data-tier": "^3.6.1"
 	},
 	"devDependencies": {
-		"eslint": "^7.28.0",
+		"eslint": "^8.9.0",
 		"fs-extra": "^10.0.0",
 		"just-test": "2.3.2",
-		"puppeteer": "^10.0.0",
-		"uglify-es": "^3.3.9"
+		"puppeteer": "^13.3.2",
+		"uglify-js": "^3.15.1"
 	}
 }
