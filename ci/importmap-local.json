@@ -1,5 +1,0 @@
-{
-	"imports": {
-		"data-tier": "/node_modules/data-tier/dist/data-tier.min.js"
-	}
-}
