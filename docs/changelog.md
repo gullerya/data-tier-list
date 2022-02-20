@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]()
 
+## [2.2.0 - 2022-02-20]()
+### Changed
+- CI/CD flows
+### Fixed
+- updated dependencies
+
 ## [2.1.1 - 2021-06-18]()
 ### Fixed
 - Safari not supporting lookbehind RegExp

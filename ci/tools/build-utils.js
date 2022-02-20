@@ -2,40 +2,40 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import fsExtra from 'fs-extra';
-import uglifyES from 'uglify-es';
+import uglifyJS from 'uglify-js';
 
 console.info('*** CLEANUP ***');
 fsExtra.emptyDirSync('./dist');
 
 console.info('*** COPY ***');
 fsExtra.copySync('./src', './dist');
+fsExtra.copySync('./src', './dist/cdn');
 
 console.info('*** PROCESS IMPORT MAPS ***');
-const importMapResourceArg = process.argv.find(a => a.startsWith('--importmap='));
-if (importMapResourceArg) {
-	const importMapResource = importMapResourceArg.replace('--importmap=', '');
-	processImportMaps('./dist', importMapResource);
-} else {
-	console.info('\timport map resource not specified, skipping this step');
-}
+processImportMaps('./dist/cdn', './ci/importmap-cdn.json');
 
 console.info('*** MINIFY ***');
 fs.writeFileSync(
 	'dist/data-tier-list.min.js',
-	uglifyES.minify({ 'dist/data-tier-list.min.js': fs.readFileSync('dist/data-tier-list.js', { encoding: 'utf8' }) }).code
+	uglifyJS.minify(fs.readFileSync('dist/data-tier-list.js', { encoding: 'utf8' })).code
+);
+fs.writeFileSync(
+	'dist/cdn/data-tier-list.min.js',
+	uglifyJS.minify(fs.readFileSync('dist/cdn/data-tier-list.js', { encoding: 'utf8' })).code
 );
 
 const hashingAlgoritm = 'sha512'
 console.info(`*** GENERATE ${hashingAlgoritm} ***`);
-for (const f of ['dist/data-tier-list.min.js', 'dist/data-tier-list.js']) {
+const sriMap = {
+	version: JSON.parse(fs.readFileSync('package.json', { encoding: 'utf-8' })).version
+};
+for (const f of ['./dist/cdn/data-tier-list.min.js', './dist/cdn/data-tier-list.js']) {
 	const text = fs.readFileSync(f, { encoding: 'utf-8' });
 	const algo = crypto.createHash(hashingAlgoritm);
 	const hash = algo.update(text, 'utf-8').digest().toString('base64');
-	console.info(`\t${hashingAlgoritm} of '${f}' is '${hash}'`);
-	//	TODO: put those 2 hashes into an example in the readme (should be copy-pasteable)
-	//	the hash should run before last commit that publishes to NPM (to be able to see it in the NPM up-to-date)
-	//	the actual CDN build will run as part of CDN, so the flow is somewhat split-merged...
+	sriMap[f] = hash;
 }
+fs.writeFileSync('sri.json', JSON.stringify(sriMap, null, '\t'), { encoding: 'utf-8' });
 
 console.info('*** DONE ***');
 

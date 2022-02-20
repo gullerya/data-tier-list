@@ -46,17 +46,17 @@ class DataTierList extends HTMLElement {
 
 		if (items === null || items === '') {
 			if (this[ITEMS_KEY]) {
-				this[ITEMS_KEY].unobserve(this[OBSERVER_KEY]);
+				Observable.unobserve(this[ITEMS_KEY], this[OBSERVER_KEY]);
 				this[ITEMS_KEY] = null;
 				this[FULL_UPDATER_KEY]();
 			}
 		} else if (typeof items === 'object') {
 			if (this[ITEMS_KEY]) {
-				this[ITEMS_KEY].unobserve(this[OBSERVER_KEY]);
+				Observable.unobserve(this[ITEMS_KEY], this[OBSERVER_KEY]);
 			}
 
 			this[ITEMS_KEY] = Observable.from(items);
-			this[ITEMS_KEY].observe(this[OBSERVER_KEY], { pathsOf: '' });
+			Observable.observe(this[ITEMS_KEY], this[OBSERVER_KEY], { pathsOf: '' });
 			this[FULL_UPDATER_KEY]();
 		} else {
 			console.error(`items MAY ONLY be set to an object, got '${items}'`);

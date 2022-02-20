@@ -1,5 +1,5 @@
 import { getSuite } from '../node_modules/just-test/dist/just-test.js';
-import '../dist/data-tier-list.js';
+import '../src/data-tier-list.js';
 
 const suite = getSuite({ name: 'Usage - object plain' });
 
