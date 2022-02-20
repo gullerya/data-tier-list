@@ -33,7 +33,7 @@ for (const f of ['./dist/cdn/data-tier-list.min.js', './dist/cdn/data-tier-list.
 	const text = fs.readFileSync(f, { encoding: 'utf-8' });
 	const algo = crypto.createHash(hashingAlgoritm);
 	const hash = algo.update(text, 'utf-8').digest().toString('base64');
-	sriMap[f] = hash;
+	sriMap[f] = `${hashingAlgoritm}-${hash}`;
 }
 fs.writeFileSync('sri.json', JSON.stringify(sriMap, null, '\t'), { encoding: 'utf-8' });
 

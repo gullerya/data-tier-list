@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]()
 
+## [2.2.1 - 2022-02-20]()
+### Fixed
+- [Issue no. 12](https://github.com/gullerya/data-tier-list/issues/12) - manual CI trigger for release
+- [Issue no. 12](https://github.com/gullerya/data-tier-list/issues/12) - manual CI trigger for release
+- [Issue no. 22](https://github.com/gullerya/data-tier-list/issues/22) - add 'sha512' to the SRI value
+
 ## [2.2.0 - 2022-02-20]()
 ### Changed
 - CI/CD flows
