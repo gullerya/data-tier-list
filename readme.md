@@ -48,6 +48,11 @@ CDN features:
 - highly available (with many geo spread edges)
 - agressive caching setup
 
+> CDN disro is accompanied with [SRI hashes](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity),
+that are found in the `sri.json` file.
+Browse to the relevant version's file revision by this example - `https://github.com/gullerya/data-tier-list/blob/v2.2.1/sri.json`,
+while replacing the `2.2.1` part with the relevant one.
+
 ## API
 
 `data-tier-list`'s HTML binding declaration API adheres to the `data-tier`'s one [here](https://github.com/gullerya/data-tier/blob/main/docs/api-tying-declaration.md).
