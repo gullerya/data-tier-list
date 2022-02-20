@@ -1,5 +1,5 @@
 {
 	"version": "2.1.2",
-	"dist/data-tier-list.min.js": "v0e/nGS5itu4Ph4O15ZgAAMRjtviJqfXgE1V1OSDAixzW2ZbVYr6s9Uy1GUQKX9UbVKLZuId6A3JFEycEFtlUA==",
-	"dist/data-tier-list.js": "i1BK5d6vnA0bhjNQ+7Aja9+3AniwI6g0q84aGAQfCzQGs6MPQVjk6jc1QkUy7WbqSDhsYivpXd0h1huG7Bkx1A=="
+	"./dist/cdn/data-tier-list.min.js": "fZW6vu8q9hj7raV2F1okJq95PjTOzMpuzC9eSsdLAcZgZaqU78TyHTpNqiu4UH2Ka5EH/fIALdfq9O3mPy7BWg==",
+	"./dist/cdn/data-tier-list.js": "D9NWVMnfe4lD5+Lf8fqOJ/djqVzLpm/d1XZpEv1y+IMM776qESH74pLppz7DHkMx/06GzP1PLHADwmHWnY2LcA=="
 }
