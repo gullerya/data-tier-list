@@ -26,7 +26,8 @@ Main features and concepts:
 ## Preview
 
 For a preview/playground you are welcome to:
-TBD
+- [CodePen](https://codepen.io/gullerya/pen/abVYKJB) of a simple exapmle of list of primitive values
+- [CodePen](https://codepen.io/gullerya/pen/ZEaxvRZ) of a more involved example of list of rows, table of data
 
 ## Install
 
