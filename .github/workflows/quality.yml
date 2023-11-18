@@ -1,10 +1,9 @@
 name: Quality pipeline
 
 on:
-  push:
-    branches: ["*"]
-  schedule:
-    - cron: "0 */12 * * *"
+  pull_request:
+    branches:
+      - main
 
 jobs:
   quality_pipeline:
@@ -12,14 +11,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.DTL_CI_AT }}
+        uses: actions/checkout@v4
 
-      - name: Setup NodeJS 16
-        uses: actions/setup-node@v2
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version-file: .nvmrc
 
       - name: Install dependencies
         run: npm ci
