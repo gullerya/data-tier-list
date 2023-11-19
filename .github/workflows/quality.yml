@@ -68,9 +68,6 @@ jobs:
       - name: Test
         run: npm run test:firefox
 
-      - name: Report coverage
-        uses: codecov/codecov-action@v3
-
   quality_pipeline_webkit:
     runs-on: ubuntu-20.04
     timeout-minutes: 5
@@ -89,6 +86,3 @@ jobs:
 
       - name: Test
         run: npm run test:webkit
-
-      - name: Report coverage
-        uses: codecov/codecov-action@v3

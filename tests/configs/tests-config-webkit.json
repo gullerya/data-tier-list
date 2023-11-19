@@ -23,16 +23,6 @@
                 "include": [
                     "./tests/**/*.js"
                 ]
-            },
-            "coverage": {
-                "include": [
-                    "./src/**/*.js"
-                ],
-                "reports": [
-                    {
-                        "type": "lcov"
-                    }
-                ]
             }
         }
     ]
