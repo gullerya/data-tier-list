@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]()
 
+## [2.3.0 - 2032-11-19]()
+### Changed
+- CI/CD reworked
+- dependencies upgraded
+
 ## [2.2.1 - 2022-02-20]()
 ### Fixed
 - [Issue no. 24](https://github.com/gullerya/data-tier-list/issues/24) - add explanation of how to use SRI (where to find values)
