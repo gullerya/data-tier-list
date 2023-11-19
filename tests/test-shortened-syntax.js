@@ -1,15 +1,18 @@
-import { getSuite } from '../node_modules/just-test/dist/just-test.js';
-import * as DataTier from '../node_modules/data-tier/dist/data-tier.js';
+import { test } from '@gullerya/just-test';
+import { getRandom } from '@gullerya/just-test/random';
+import { waitNextTask } from '@gullerya/just-test/timing';
+import { ties } from '@gullerya/data-tier';
 import '../src/data-tier-list.js';
 
-const suite = getSuite({ name: 'Tying syntaxes' });
+import 'chai';
+const assert = globalThis.chai.assert;
 
-suite.runTest({ name: 'shortest syntax, primitive values' }, async test => {
+test('shortest syntax, primitive values', async () => {
 	const
-		tn = test.getRandom(8),
+		tn = getRandom(),
 		e = document.createElement('div');
 
-	DataTier.ties.create(tn, ['A', 'B', 'C']);
+	ties.create(tn, ['A', 'B', 'C']);
 	e.innerHTML = `
 		<data-tier-list data-tie="${tn} => items">
 			<div data-tie="item, item => value"></div>
@@ -17,10 +20,10 @@ suite.runTest({ name: 'shortest syntax, primitive values' }, async test => {
 	`;
 
 	document.body.appendChild(e);
-	await test.waitNextMicrotask();
+	await waitNextTask();
 	const children = e.querySelectorAll('div');
-	test.assertEqual(4, children.length);
-	test.assertEqual('A', children[1].textContent);
-	test.assertEqual('B', children[2].textContent);
-	test.assertEqual('C', children[3].textContent);
+	assert.strictEqual(4, children.length);
+	assert.strictEqual('A', children[1].textContent);
+	assert.strictEqual('B', children[2].textContent);
+	assert.strictEqual('C', children[3].textContent);
 });

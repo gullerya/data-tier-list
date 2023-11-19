@@ -1,11 +1,14 @@
-import { getSuite } from '../node_modules/just-test/dist/just-test.js';
-import { ties } from '../node_modules/data-tier/dist/data-tier.min.js';
+import { test } from '@gullerya/just-test';
+import { getRandom } from '@gullerya/just-test/random';
+import { waitNextTask } from '@gullerya/just-test/timing';
+import { ties } from '@gullerya/data-tier';
 import '../src/data-tier-list.js';
 
-const suite = getSuite({ name: 'Usage - array observable' });
+import 'chai';
+const assert = globalThis.chai.assert;
 
-suite.runTest({ name: 'e2e flow - data set tied via HTML' }, async test => {
-	const tn = test.getRandom(8);
+test('e2e flow - data set tied via HTML', async () => {
+	const tn = getRandom(8);
 
 	//	create model
 	const m = ties.create(tn, {
@@ -22,18 +25,18 @@ suite.runTest({ name: 'e2e flow - data set tied via HTML' }, async test => {
 	document.body.appendChild(v);
 
 	//	asserts
-	await assertCorrelation(m.items, v, test);
-	test.assertEqual(m.items, v.querySelector('data-tier-list').items);
+	await assertCorrelation(m.items, v);
+	assert.strictEqual(m.items, v.querySelector('data-tier-list').items);
 
 	//	direct manipulations on the model, it should be the same
 	m.items[0].label = 'Label 1';
 	m.items.pop();
 	m.items[1] = { label: 'Label 2' };
-	await assertCorrelation(m.items, v, test);
+	await assertCorrelation(m.items, v);
 });
 
-suite.runTest({ name: 'e2e flow - data set tied via JS API' }, async test => {
-	const tn = test.getRandom(8);
+test('e2e flow - data set tied via JS API', async () => {
+	const tn = getRandom();
 
 	//	create model
 	const m = ties.create(tn, {
@@ -51,21 +54,21 @@ suite.runTest({ name: 'e2e flow - data set tied via JS API' }, async test => {
 	document.body.appendChild(v);
 
 	//	asserts
-	await assertCorrelation(m.items, v, test);
-	test.assertEqual(m.items, v.querySelector('data-tier-list').items);
+	await assertCorrelation(m.items, v);
+	assert.strictEqual(m.items, v.querySelector('data-tier-list').items);
 
 	//	direct manipulations on the model, it should be the same
 	m.items[0].label = 'Label 1';
 	m.items.pop();
 	m.items[1] = { label: 'Label 2' };
-	await assertCorrelation(m.items, v, test);
+	await assertCorrelation(m.items, v);
 });
 
-async function assertCorrelation(items, view, test) {
-	await test.waitNextMicrotask();
-	test.assertEqual(items.length + 1, view.childElementCount);
+async function assertCorrelation(items, view) {
+	await waitNextTask();
+	assert.strictEqual(items.length + 1, view.childElementCount);
 	for (const [i, te] of Array.from(view.children).entries()) {
 		if (!i) continue;
-		test.assertEqual(items[i - 1].label, te.textContent);
+		assert.strictEqual(items[i - 1].label, te.textContent);
 	}
 }

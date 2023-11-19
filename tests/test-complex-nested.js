@@ -1,7 +1,10 @@
-import { getSuite } from '../node_modules/just-test/dist/just-test.js';
+import { test } from '@gullerya/just-test';
+import { waitNextTask } from '@gullerya/just-test/timing';
 import '../src/data-tier-list.js';
 
-const suite = getSuite({ name: 'Complex cases - nested' });
+import 'chai';
+const assert = globalThis.chai.assert;
+
 const htmlTemplate = `
 	<data-tier-list>
 		<div data-tie="scope => scope">
@@ -12,7 +15,7 @@ const htmlTemplate = `
 	</data-tier-list>
 `;
 
-suite.runTest({ name: 'complex grid content - set items' }, async test => {
+test('complex grid content - set items', async () => {
 	const e = document.createElement('div');
 	e.innerHTML = htmlTemplate;
 	e.style.cssText = 'width: 100%; height: 200px; overflow: auto';
@@ -20,15 +23,15 @@ suite.runTest({ name: 'complex grid content - set items' }, async test => {
 
 	e.firstElementChild.items = createGridData(10, 10);
 
-	await test.waitNextMicrotask();
+	await waitNextTask();
 
-	test.assertEqual(11, e.childElementCount);
+	assert.strictEqual(11, e.childElementCount);
 	for (let i = 1; i < e.childElementCount; i++) {
 		const flChild = e.children[i];
-		test.assertEqual(11, flChild.childElementCount);
+		assert.strictEqual(11, flChild.childElementCount);
 		for (let j = 1; j < flChild.length; j++) {
 			const slChild = flChild.children[j];
-			test.assertEqual(j, slChild.textContent);
+			assert.strictEqual(j, slChild.textContent);
 		}
 	}
 });

@@ -1,25 +1,22 @@
 name: Quality pipeline
 
 on:
-  push:
-    branches: ["*"]
-  schedule:
-    - cron: "0 */12 * * *"
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  quality_pipeline:
+  quality_pipeline_general:
     runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.DTL_CI_AT }}
+        uses: actions/checkout@v4
 
-      - name: Setup NodeJS 16
-        uses: actions/setup-node@v2
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version-file: .nvmrc
 
       - name: Install dependencies
         run: npm ci
@@ -30,8 +27,62 @@ jobs:
       - name: Lint
         run: npm run lint
 
+  quality_pipeline_chromium:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install
+        run: npm ci && npx playwright install --with-deps chromium
+
       - name: Test
-        run: npm run test
+        run: npm run test:chromium
 
       - name: Report coverage
-        run: bash <(curl -s https://codecov.io/bash)
+        uses: codecov/codecov-action@v3
+
+  quality_pipeline_firefox:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install
+        run: npm ci && npx playwright install --with-deps firefox
+
+      - name: Test
+        run: npm run test:firefox
+
+  quality_pipeline_webkit:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install
+        run: npm ci && npx playwright install --with-deps webkit
+
+      - name: Test
+        run: npm run test:webkit

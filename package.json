@@ -45,19 +45,20 @@
 	"scripts": {
 		"build": "node ./ci/tools/build-utils.js",
 		"lint": "eslint -c ./ci/.eslintrc.json ./src/*.js ./tests/*.js ./ci/**/*.js",
-		"test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json",
-		"version": "npm run build && git add --all",
-		"postversion": "git push && git push --tags"
+		"test": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-dev.json",
+		"test:chromium": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-chromium.json",
+		"test:firefox": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-firefox.json",
+		"test:webkit": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests//configs/tests-config-webkit.json"
 	},
 	"dependencies": {
-		"data-tier": "^3.6.1"
+		"@gullerya/data-tier": "^4.0.0"
 	},
 	"devDependencies": {
-		"es-module-shims": "^1.4.6",
-		"eslint": "^8.9.0",
-		"fs-extra": "^10.0.0",
-		"just-test": "2.3.2",
-		"puppeteer": "^13.3.2",
-		"uglify-js": "^3.15.1"
+		"@gullerya/just-test": "^4.0.6",
+		"chai": "^4.3.10",
+		"es-module-shims": "^1.8.2",
+		"eslint": "^8.54.0",
+		"fs-extra": "^11.1.1",
+		"uglify-js": "^3.17.4"
 	}
 }

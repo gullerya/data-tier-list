@@ -1,18 +1,14 @@
-import { getSuite } from '../node_modules/just-test/dist/just-test.js';
+import { test } from '@gullerya/just-test';
+import { getRandom } from '@gullerya/just-test/random';
+import { waitNextTask } from '@gullerya/just-test/timing';
 import '../src/data-tier-list.js';
 
-const suite = getSuite({ name: 'Template manupulations' });
-const randomIDSource = 'abcdefghijklmnopqrstuvwxyz';
+import 'chai';
+const assert = globalThis.chai.assert;
 
-suite.runTest({ name: 'template first, data last' }, async () => {
-});
-
-suite.runTest({ name: 'template last, data first' }, async () => {
-});
-
-suite.runTest({ name: 'template change (top level) reflected' }, async test => {
-	const lid = test.getRandom(8, [randomIDSource]);
-	const tid = test.getRandom(8, [randomIDSource]);
+test('template change (top level) reflected', async () => {
+	const lid = 'a' + getRandom();
+	const tid = 'a' + getRandom();
 	let template = document.createElement('template');
 	template.innerHTML = `
 		<div id="${tid}"></div>
@@ -23,28 +19,28 @@ suite.runTest({ name: 'template change (top level) reflected' }, async test => {
 	document.body.appendChild(template.content);
 	const le = document.querySelector(`#${lid}`);
 	le.items = ['a', 'b', 'c'];
-	await test.waitNextMicrotask();
+	await waitNextTask();
 
 	const te = document.querySelector(`#${tid}`);
-	test.assertEqual(3, te.childElementCount);
+	assert.strictEqual(3, te.childElementCount);
 	Array.from(te.children).forEach((c, i) => {
-		test.assertEqual('span', c.localName);
-		test.assertEqual(le.items[i], c.textContent);
+		assert.strictEqual('span', c.localName);
+		assert.strictEqual(le.items[i], c.textContent);
 	});
 
 	le.innerHTML = '<div data-tie="item"></div>';
-	await test.waitNextMicrotask();
+	await waitNextTask();
 
-	test.assertEqual(3, te.childElementCount);
+	assert.strictEqual(3, te.childElementCount);
 	Array.from(te.children).forEach((c, i) => {
-		test.assertEqual('div', c.localName);
-		test.assertEqual(le.items[i], c.textContent);
+		assert.strictEqual('div', c.localName);
+		assert.strictEqual(le.items[i], c.textContent);
 	});
 });
 
-suite.runTest({ name: 'template change (nested child) reflected' }, async test => {
-	const lid = test.getRandom(8, [randomIDSource]);
-	const tid = test.getRandom(8, [randomIDSource]);
+test('template change (nested child) reflected', async () => {
+	const lid = 'a' + getRandom();
+	const tid = 'a' + getRandom();
 	let template = document.createElement('template');
 	template.innerHTML = `
 		<div id="${tid}"></div>
@@ -57,29 +53,23 @@ suite.runTest({ name: 'template change (nested child) reflected' }, async test =
 	document.body.appendChild(template.content);
 	const le = document.querySelector(`#${lid}`);
 	le.items = ['a', 'b', 'c'];
-	await test.waitNextMicrotask();
+	await waitNextTask();
 
 	const te = document.querySelector(`#${tid}`);
-	test.assertEqual(3, te.childElementCount);
+	assert.strictEqual(3, te.childElementCount);
 	Array.from(te.children).forEach((c, i) => {
-		test.assertEqual('div', c.localName);
-		test.assertEqual('span', c.firstElementChild.localName);
-		test.assertEqual(le.items[i], c.firstElementChild.textContent);
+		assert.strictEqual('div', c.localName);
+		assert.strictEqual('span', c.firstElementChild.localName);
+		assert.strictEqual(le.items[i], c.firstElementChild.textContent);
 	});
 
 	le.firstElementChild.innerHTML = '<div data-tie="item"></div>';
-	await test.waitNextMicrotask();
+	await waitNextTask();
 
-	test.assertEqual(3, te.childElementCount);
+	assert.strictEqual(3, te.childElementCount);
 	Array.from(te.children).forEach((c, i) => {
-		test.assertEqual('div', c.localName);
-		test.assertEqual('div', c.firstElementChild.localName);
-		test.assertEqual(le.items[i], c.firstElementChild.textContent);
+		assert.strictEqual('div', c.localName);
+		assert.strictEqual('div', c.firstElementChild.localName);
+		assert.strictEqual(le.items[i], c.firstElementChild.textContent);
 	});
-});
-
-suite.runTest({ name: 'template clear reflected' }, async () => {
-});
-
-suite.runTest({ name: 'template error reflected' }, async () => {
 });
