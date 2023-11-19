@@ -24,7 +24,7 @@ fs.writeFileSync(
 	uglifyJS.minify(fs.readFileSync('dist/cdn/data-tier-list.js', { encoding: 'utf8' })).code
 );
 
-const hashingAlgoritm = 'sha512'
+const hashingAlgoritm = 'sha512';
 console.info(`*** GENERATE ${hashingAlgoritm} ***`);
 const sriMap = {
 	version: JSON.parse(fs.readFileSync('package.json', { encoding: 'utf-8' })).version

@@ -1,0 +1,22 @@
+{
+    "extends": "eslint:recommended",
+    "env": {
+        "browser": true
+    },
+    "rules": {
+        "consistent-return": 2,
+        "indent": [
+            "error",
+            "tab"
+        ],
+        "no-else-return": 1,
+        "semi": [
+            "error",
+            "always"
+        ],
+        "space-unary-ops": 2
+    },
+    "globals": {
+        "globalThis": true
+    }
+}

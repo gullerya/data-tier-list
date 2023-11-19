@@ -21,17 +21,17 @@ test('e2e flow - data set via JS API', async () => {
 	const m = v.querySelector('data-tier-list').items;
 
 	//	asserts
-	await assertCorrelation(mBase, v, test);
+	await assertCorrelation(mBase, v);
 	assert.notEqual(mBase, m);
 
 	//	get model (it's not the same) and manipulate
 	m[0].label = 'Label 1';
 	m.pop();
 	m[1] = { label: 'Label 2' };
-	await assertCorrelation(m, v, test);
+	await assertCorrelation(m, v);
 });
 
-async function assertCorrelation(items, view, test) {
+async function assertCorrelation(items, view) {
 	await waitNextTask();
 	assert.strictEqual(items.length + 1, view.childElementCount);
 	for (const [i, te] of Array.from(view.children).entries()) {

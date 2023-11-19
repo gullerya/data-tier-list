@@ -4,7 +4,7 @@ import { ties } from '@gullerya/data-tier';
 import '../src/data-tier-list.js';
 
 import 'chai';
-const assert = globalThis.chai.assert;
+// const assert = globalThis.chai.assert;
 
 customElements.define('x-suite', class extends HTMLElement {
 	constructor() {

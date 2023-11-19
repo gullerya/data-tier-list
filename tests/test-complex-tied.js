@@ -43,7 +43,7 @@ test('complex grid content - set items', async () => {
 	const tn = getRandom();
 	const model = ties.create(tn, createNItems(20));
 
-	e.firstElementChild.dataset.tie = `${tn} => items`
+	e.firstElementChild.dataset.tie = `${tn} => items`;
 	await waitNextTask();
 	assert.strictEqual(21, e.childElementCount);
 	assert.strictEqual('Name 1', e.children[1].children[0].textContent);

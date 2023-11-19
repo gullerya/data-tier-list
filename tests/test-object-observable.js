@@ -67,7 +67,7 @@ test('e2e flow - data set tied via JS API', async () => {
 
 	//	direct manipulations on the model, it should be the same
 	m.items.a.label = 'Label 1';
-	delete m.items.b
+	delete m.items.b;
 	m.items.c = { label: 'Label 2' };
 	await assertCorrelation(m.items, v);
 });
