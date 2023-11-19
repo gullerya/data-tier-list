@@ -1,9 +1,11 @@
-import { getSuite } from '../node_modules/just-test/dist/just-test.js';
+import { test } from '@gullerya/just-test';
+import { waitNextTask } from '@gullerya/just-test/timing';
 import '../src/data-tier-list.js';
 
-const suite = getSuite({ name: 'Usage - array plain' });
+import 'chai';
+const assert = globalThis.chai.assert;
 
-suite.runTest({ name: 'e2e flow - data set via JS API' }, async test => {
+test('e2e flow - data set via JS API', async () => {
 	//	create model
 	const mBase = [{ label: 'Label A' }, { label: 'Label B' }, { label: 'Label C' }];
 
@@ -20,7 +22,7 @@ suite.runTest({ name: 'e2e flow - data set via JS API' }, async test => {
 
 	//	asserts
 	await assertCorrelation(mBase, v, test);
-	test.assertNotEqual(mBase, m);
+	assert.notEqual(mBase, m);
 
 	//	get model (it's not the same) and manipulate
 	m[0].label = 'Label 1';
@@ -30,10 +32,10 @@ suite.runTest({ name: 'e2e flow - data set via JS API' }, async test => {
 });
 
 async function assertCorrelation(items, view, test) {
-	await test.waitNextMicrotask();
-	test.assertEqual(items.length + 1, view.childElementCount);
+	await waitNextTask();
+	assert.strictEqual(items.length + 1, view.childElementCount);
 	for (const [i, te] of Array.from(view.children).entries()) {
 		if (!i) continue;
-		test.assertEqual(items[i - 1].label, te.textContent);
+		assert.strictEqual(items[i - 1].label, te.textContent);
 	}
 }

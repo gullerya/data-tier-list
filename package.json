@@ -45,13 +45,17 @@
 	"scripts": {
 		"build": "node ./ci/tools/build-utils.js",
 		"lint": "eslint -c ./ci/.eslintrc.json ./src/*.js ./tests/*.js ./ci/**/*.js",
-		"test": "node ./node_modules/just-test/dist/tests-runner/run-tests.js --config=./tests/tests-runner-config.json"
+		"test": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-dev.json",
+		"test:ci:chromium": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-chromium.json",
+		"test:ci:firefox": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-firefox.json",
+		"test:ci:webkit": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests//configs/tests-config-webkit.json"
 	},
 	"dependencies": {
 		"@gullerya/data-tier": "^4.0.0"
 	},
 	"devDependencies": {
 		"@gullerya/just-test": "^4.0.6",
+		"chai": "^4.3.10",
 		"es-module-shims": "^1.8.2",
 		"eslint": "^8.54.0",
 		"fs-extra": "^11.1.1",

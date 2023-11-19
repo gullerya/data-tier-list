@@ -1,8 +1,10 @@
-import { getSuite } from '../node_modules/just-test/dist/just-test.js';
-import * as DataTier from '../node_modules/data-tier/dist/data-tier.min.js';
+import { test } from '@gullerya/just-test';
+import { getRandom } from '@gullerya/just-test/random';
+import { ties } from '@gullerya/data-tier';
 import '../src/data-tier-list.js';
 
-const suite = getSuite({ name: 'Complex cases - custom elements nested structure (suite-test scenario)' });
+import 'chai';
+const assert = globalThis.chai.assert;
 
 customElements.define('x-suite', class extends HTMLElement {
 	constructor() {
@@ -30,9 +32,9 @@ customElements.define('x-test', class extends HTMLElement {
 	}
 });
 
-suite.runTest({ name: 'validate list within custom element' }, async test => {
-	const tieKey = test.getRandom(8);
-	const model = DataTier.ties.create(tieKey, {
+test('validate list within custom element', async () => {
+	const tieKey = getRandom();
+	const model = ties.create(tieKey, {
 		suites: []
 	});
 	const ce = document.createElement('div');
@@ -52,4 +54,7 @@ suite.runTest({ name: 'validate list within custom element' }, async test => {
 		{ name: 'suite-a', duration: 2.3, tests: [{ name: 'test-a', status: 'pass' }, { name: 'test-b', status: 'pass' }, { name: 'test-c', status: 'pass' }] },
 		{ name: 'suite-b', duration: 12.6, tests: [{ name: 'test-1', status: 'pass' }, { name: 'test-2', status: 'fail' }] }
 	];
+
+	//	TODO: assertions
+	// assert.fail('not yet implemented');
 });

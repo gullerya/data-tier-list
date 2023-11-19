@@ -1,4 +1,4 @@
-import { ties, Observable } from 'data-tier';
+import { ties, Observable } from '@gullerya/data-tier';
 
 const
 	DATA_TIER_LIST = 'data-tier-list',

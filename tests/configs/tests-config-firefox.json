@@ -1,0 +1,39 @@
+{
+    "environments": [
+        {
+            "browser": {
+                "type": "firefox",
+                "executors": {
+                    "type": "iframe"
+                },
+                "importmap": {
+                    "imports": {
+                        "@gullerya/just-test": "/libs/@gullerya/just-test/bin/runner/just-test.js",
+                        "@gullerya/just-test/timing": "/libs/@gullerya/just-test/bin/common/time-utils.js",
+                        "@gullerya/just-test/random": "/libs/@gullerya/just-test/bin/common/random-utils.js",
+                        "@gullerya/data-tier": "/libs/@gullerya/data-tier/dist/data-tier.min.js",
+                        "chai": "/libs/chai/chai.js"
+                    }
+                }
+            },
+            "tests": {
+                "ttl": 300000,
+                "maxFail": 0,
+                "maxSkip": 0,
+                "include": [
+                    "./tests/**/*.js"
+                ]
+            },
+            "coverage": {
+                "include": [
+                    "./src/**/*.js"
+                ],
+                "reports": [
+                    {
+                        "type": "lcov"
+                    }
+                ]
+            }
+        }
+    ]
+}
