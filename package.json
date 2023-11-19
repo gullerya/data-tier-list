@@ -46,9 +46,9 @@
 		"build": "node ./ci/tools/build-utils.js",
 		"lint": "eslint -c ./ci/.eslintrc.json ./src/*.js ./tests/*.js ./ci/**/*.js",
 		"test": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-dev.json",
-		"test:ci:chromium": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-chromium.json",
-		"test:ci:firefox": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-firefox.json",
-		"test:ci:webkit": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests//configs/tests-config-webkit.json"
+		"test:chromium": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-chromium.json",
+		"test:firefox": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests/configs/tests-config-firefox.json",
+		"test:webkit": "node ./node_modules/@gullerya/just-test/bin/local-runner.js config_file=./tests//configs/tests-config-webkit.json"
 	},
 	"dependencies": {
 		"@gullerya/data-tier": "^4.0.0"
